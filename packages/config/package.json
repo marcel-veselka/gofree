@@ -1,0 +1,10 @@
+{
+  "name": "@gofree/config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./eslint": "./eslint/base.js",
+    "./tailwind": "./tailwind/base.ts",
+    "./tsconfig/*.json": "./tsconfig/*.json"
+  }
+}

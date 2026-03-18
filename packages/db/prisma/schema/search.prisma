@@ -1,0 +1,29 @@
+model SearchIndex {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  orgId      String
+  projectId  String
+  content    String
+  updatedAt  DateTime @updatedAt
+
+  // tsvector and pgvector columns managed via raw SQL migrations
+  // tsvector  Unsupported("tsvector")
+  // embedding Unsupported("vector(1536)")
+
+  @@unique([entityType, entityId])
+  @@index([orgId, projectId])
+  @@map("search_index")
+}
+
+model UsageEvent {
+  id        String   @id @default(cuid())
+  orgId     String
+  userId    String
+  type      String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([orgId, createdAt])
+  @@map("usage_events")
+}

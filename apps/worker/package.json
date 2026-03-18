@@ -1,0 +1,23 @@
+{
+  "name": "@gofree/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx trigger.dev@latest dev",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@trigger.dev/sdk": "^3.0.0",
+    "@gofree/ai": "workspace:*",
+    "@gofree/core": "workspace:*",
+    "@gofree/db": "workspace:*",
+    "@gofree/mcp": "workspace:*",
+    "@gofree/search": "workspace:*"
+  },
+  "devDependencies": {
+    "@gofree/config": "workspace:*",
+    "typescript": "^5.7.0"
+  }
+}

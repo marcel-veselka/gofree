@@ -1,0 +1,28 @@
+{
+  "name": "@gofree/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@trpc/server": "^11.0.0",
+    "superjson": "^2.0.0",
+    "zod": "^3.0.0"
+  },
+  "devDependencies": {
+    "@gofree/config": "workspace:*",
+    "@gofree/core": "workspace:*",
+    "@gofree/db": "workspace:*",
+    "@gofree/auth": "workspace:*",
+    "@gofree/ai": "workspace:*",
+    "@gofree/search": "workspace:*",
+    "@gofree/mcp": "workspace:*",
+    "@gofree/realtime": "workspace:*"
+  }
+}

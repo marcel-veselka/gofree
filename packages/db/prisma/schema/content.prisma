@@ -1,0 +1,54 @@
+enum SpecStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  ARCHIVED
+}
+
+model Spec {
+  id        String     @id @default(cuid())
+  projectId String
+  title     String
+  content   String
+  version   Int        @default(1)
+  status    SpecStatus @default(DRAFT)
+  createdBy String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  project  Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  comments Comment[]
+
+  @@index([projectId])
+  @@map("specs")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  specId    String?
+  runId     String?
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  spec Spec? @relation(fields: [specId], references: [id], onDelete: Cascade)
+  run  Run?  @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model File {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  mimeType    String
+  sizeBytes   Int
+  storagePath String
+  uploadedBy  String
+  createdAt   DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("files")
+}
