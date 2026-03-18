@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { organization } from 'better-auth/plugins';
+import { organization, genericOAuth } from 'better-auth/plugins';
 import { db } from '@gofree/db';
 
 function slugify(text: string): string {
@@ -16,13 +16,42 @@ function slugify(text: string): string {
 export const auth = betterAuth({
   database: prismaAdapter(db, { provider: 'postgresql' }),
   emailAndPassword: { enabled: true },
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    },
-  },
-  plugins: [organization()],
+  plugins: [
+    organization(),
+    genericOAuth({
+      config: [
+        {
+          providerId: 'github',
+          clientId: process.env.GITHUB_CLIENT_ID!,
+          clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+          authorizationUrl: 'https://github.com/login/oauth/authorize',
+          tokenUrl: 'https://github.com/login/oauth/access_token',
+          scopes: ['read:user', 'user:email'],
+          pkce: false,
+          async getUserInfo(token) {
+            const res = await fetch('https://api.github.com/user', {
+              headers: { Authorization: `Bearer ${token.accessToken}`, 'User-Agent': 'gofree' },
+            });
+            const profile = await res.json() as Record<string, unknown>;
+            const emailsRes = await fetch('https://api.github.com/user/emails', {
+              headers: { Authorization: `Bearer ${token.accessToken}`, 'User-Agent': 'gofree' },
+            });
+            const emails = await emailsRes.json() as Array<{ email: string; primary: boolean; verified: boolean }>;
+            const primaryEmail = emails.find((e) => e.primary)?.email ?? profile.email as string;
+            return {
+              user: {
+                id: String(profile.id),
+                name: (profile.name as string) || (profile.login as string) || '',
+                email: primaryEmail,
+                image: profile.avatar_url as string,
+                emailVerified: emails.find((e) => e.email === primaryEmail)?.verified ?? false,
+              },
+            };
+          },
+        },
+      ],
+    }),
+  ],
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day
