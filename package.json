@@ -17,11 +17,6 @@
     "db:studio": "pnpm --filter @gofree/db db:studio",
     "clean": "turbo clean && rm -rf node_modules"
   },
-  "pnpm": {
-    "overrides": {
-      "zod": "3.23.8"
-    }
-  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.0.3",

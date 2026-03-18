@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./client": "./src/client.ts",
+    "./handler": "./src/handler.ts",
     "./middleware": "./src/middleware.ts"
   },
   "scripts": {
