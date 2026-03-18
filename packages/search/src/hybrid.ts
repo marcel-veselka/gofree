@@ -1,5 +1,5 @@
-import { searchKeyword } from './keyword.js';
-import { searchVector } from './vector.js';
+import { searchKeyword } from './keyword';
+import { searchVector } from './vector';
 
 interface HybridSearchOptions {
   query: string;

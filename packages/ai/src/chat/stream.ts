@@ -1,6 +1,6 @@
 import { streamText } from 'ai';
-import { getProvider } from '../providers/registry.js';
-import type { ProviderName } from '../providers/registry.js';
+import { getProvider } from '../providers/registry';
+import type { ProviderName } from '../providers/registry';
 
 interface StreamChatOptions {
   provider: ProviderName;

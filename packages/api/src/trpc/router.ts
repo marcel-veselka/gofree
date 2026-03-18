@@ -1,8 +1,8 @@
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
-import type { TRPCContext } from './context.js';
-import { orgRouter } from './routers/org.js';
-import { projectRouter } from './routers/project.js';
+import type { TRPCContext } from './context';
+import { orgRouter } from './routers/org';
+import { projectRouter } from './routers/project';
 
 const t = initTRPC.context<TRPCContext>().create({
   transformer: superjson,

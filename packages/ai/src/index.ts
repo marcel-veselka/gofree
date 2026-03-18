@@ -1,2 +1,2 @@
-export { getProvider } from './providers/registry.js';
-export { streamChat } from './chat/stream.js';
+export { getProvider } from './providers/registry';
+export { streamChat } from './chat/stream';

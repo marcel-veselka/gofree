@@ -1,4 +1,4 @@
-export { searchKeyword } from './keyword.js';
-export { searchVector } from './vector.js';
-export { searchHybrid } from './hybrid.js';
-export { indexContent } from './indexer.js';
+export { searchKeyword } from './keyword';
+export { searchVector } from './vector';
+export { searchHybrid } from './hybrid';
+export { indexContent } from './indexer';
