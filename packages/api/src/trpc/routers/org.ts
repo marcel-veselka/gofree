@@ -1,41 +1,49 @@
 import { z } from 'zod';
-import { initTRPC } from '@trpc/server';
-import type { TRPCContext } from '../context';
-
-const t = initTRPC.context<TRPCContext>().create();
+import { TRPCError } from '@trpc/server';
+import { t, protectedProcedure, orgProcedure } from '../procedures';
+import { slugify } from '@gofree/core';
 
 export const orgRouter = t.router({
-  list: t.procedure.query(async ({ ctx }) => {
-    // TODO: Filter by current user's memberships
-    const orgs = await ctx.db.organization.findMany({
-      take: 50,
-      orderBy: { name: 'asc' },
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const memberships = await ctx.db.orgMembership.findMany({
+      where: { userId: ctx.user.id },
+      include: { org: true },
+      orderBy: { org: { name: 'asc' } },
     });
-    return orgs;
+    return memberships.map((m) => ({ ...m.org, role: m.role }));
   }),
 
-  getBySlug: t.procedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const org = await ctx.db.organization.findUnique({
-        where: { slug: input.slug },
-      });
-      return org;
-    }),
+  getBySlug: orgProcedure.query(async ({ ctx }) => {
+    return { ...ctx.org, role: ctx.orgRole };
+  }),
 
-  create: t.procedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1).max(100),
-        slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
+        slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const slug = input.slug ?? slugify(input.name);
+
+      const existing = await ctx.db.organization.findUnique({ where: { slug } });
+      if (existing) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'Organization slug already exists' });
+      }
+
       const org = await ctx.db.organization.create({
         data: {
           name: input.name,
-          slug: input.slug,
+          slug,
+          members: {
+            create: {
+              userId: ctx.user.id,
+              role: 'OWNER',
+            },
+          },
         },
+        include: { members: true },
       });
       return org;
     }),
