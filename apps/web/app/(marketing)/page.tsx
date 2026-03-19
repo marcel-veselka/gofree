@@ -1,15 +1,6 @@
 import Link from 'next/link';
 import { MobileNav } from '@/components/mobile-nav';
 
-const testTargets = [
-  { label: 'Web apps', icon: '🌐' },
-  { label: 'Mobile', icon: '📱' },
-  { label: 'Desktop', icon: '🖥️' },
-  { label: 'APIs', icon: '🔌' },
-  { label: 'Databases', icon: '🗄️' },
-  { label: 'E2E flows', icon: '🔄' },
-];
-
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col bg-[#fafafa]">
@@ -60,9 +51,9 @@ export default function HomePage() {
             Ship faster.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-foreground/60">
-            AI testing agents that autonomously test your web apps, mobile apps, desktop software, APIs, databases, and end-to-end flows. Write specs, let agents generate and run tests, get results in minutes.
+            Point AI agents at your app. Get comprehensive test coverage in minutes — no scripts to write.
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-center gap-4">
             <Link
               href="/signup"
               className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet-200 transition-all hover:shadow-xl hover:shadow-violet-300"
@@ -70,17 +61,17 @@ export default function HomePage() {
               Start testing for free
               <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
             </Link>
-            <Link
-              href="https://github.com/gofree-ai/gofree"
-              className="inline-flex items-center gap-2 rounded-xl border border-foreground/10 bg-white px-8 py-4 text-base font-semibold text-foreground shadow-sm transition-all hover:border-foreground/20 hover:shadow-md"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-              </svg>
-              Star on GitHub
-            </Link>
+            <div className="flex items-center gap-4 text-sm text-foreground/40">
+              <span>Free forever. No credit card.</span>
+              <span>&middot;</span>
+              <Link href="https://github.com/gofree-ai/gofree" className="inline-flex items-center gap-1 hover:text-foreground/60 transition-colors">
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                Star on GitHub
+              </Link>
+            </div>
           </div>
-          <p className="mt-4 text-sm text-foreground/40">Free forever. No credit card required.</p>
         </div>
 
         {/* Product preview mock */}
@@ -112,54 +103,49 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* What we test — target pills */}
+      {/* What we test — 6-card grid */}
       <section id="what-we-test" className="px-6 pb-20 lg:px-12">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-3xl font-bold sm:text-4xl">
-            One platform.{' '}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Every layer tested.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-foreground/50">
-            GoFree agents don&apos;t just test web pages. They test your entire stack&mdash;from UI to database, from REST endpoints to end-to-end business flows.
-          </p>
-          <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-3">
-            {testTargets.map((t) => (
-              <div key={t.label} className="flex items-center gap-2 rounded-full border border-foreground/10 bg-white px-5 py-2.5 text-sm font-medium shadow-sm">
-                <span>{t.icon}</span>
-                <span>{t.label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Expanded grid */}
-          <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <div className="mb-3 text-2xl">🌐</div>
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+              </div>
               <h3 className="text-base font-semibold">Web application testing</h3>
               <p className="mt-1 text-sm text-foreground/50">Autonomous browser testing with Playwright. Agents map your app, create tests, and self-heal when UI changes.</p>
             </div>
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <div className="mb-3 text-2xl">📱</div>
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+              </div>
               <h3 className="text-base font-semibold">Mobile app testing</h3>
               <p className="mt-1 text-sm text-foreground/50">Test iOS and Android apps through native frameworks. Agents handle device fragmentation and OS variations.</p>
             </div>
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <div className="mb-3 text-2xl">🖥️</div>
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z" /></svg>
+              </div>
               <h3 className="text-base font-semibold">Desktop app testing</h3>
               <p className="mt-1 text-sm text-foreground/50">Windows, macOS, Linux. Agents interact with native UI elements, keyboard shortcuts, and system dialogs.</p>
             </div>
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <div className="mb-3 text-2xl">🔌</div>
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" /></svg>
+              </div>
               <h3 className="text-base font-semibold">API &amp; integration testing</h3>
               <p className="mt-1 text-sm text-foreground/50">REST, GraphQL, gRPC, WebSocket. Agents generate test suites from your OpenAPI specs or by exploring endpoints.</p>
             </div>
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <div className="mb-3 text-2xl">🗄️</div>
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
+              </div>
               <h3 className="text-base font-semibold">Database &amp; data testing</h3>
               <p className="mt-1 text-sm text-foreground/50">Validate schemas, migrations, data integrity, and query performance. PostgreSQL, MySQL, MongoDB, and more.</p>
             </div>
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              <div className="mb-3 text-2xl">🔄</div>
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+              </div>
               <h3 className="text-base font-semibold">End-to-end flow testing</h3>
               <p className="mt-1 text-sm text-foreground/50">Test complete business workflows that span UI, APIs, databases, and third-party services in a single agent run.</p>
             </div>
@@ -168,15 +154,13 @@ export default function HomePage() {
       </section>
 
       {/* Social proof */}
-      <section className="border-t border-foreground/5 px-6 py-12 lg:px-12">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-sm font-medium text-foreground/40 uppercase tracking-wider">Trusted by engineering teams at</p>
-          <div className="mt-6 flex items-center justify-center gap-10 opacity-40 grayscale">
-            <span className="text-lg font-bold">Livesport</span>
-            <span className="text-lg font-bold">Multitude</span>
-            <span className="text-lg font-bold">SYNOT</span>
-            <span className="text-lg font-bold">Inventi</span>
-          </div>
+      <section className="border-t border-foreground/5 px-6 py-16 lg:px-12">
+        <p className="text-center text-xs font-medium uppercase tracking-widest text-foreground/30">Built by the team behind</p>
+        <div className="mt-4 flex items-center justify-center">
+          <Link href="https://wopee.io" className="flex items-center gap-2 text-foreground/50 hover:text-foreground transition-colors">
+            <span className="text-lg font-bold">Wopee.io</span>
+            <span className="text-sm">&mdash; AI testing agents used by Livesport, Multitude, SYNOT</span>
+          </Link>
         </div>
       </section>
 
@@ -304,9 +288,42 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-foreground/5 bg-white px-6 py-8 text-center text-sm text-foreground/40">
-        GoFree &mdash; AI testing agents for everything &middot; Built by the{' '}
-        <Link href="https://wopee.io" className="text-foreground/60 hover:text-foreground">Wopee.io</Link> team
+      <footer className="border-t border-foreground/5 bg-white px-6 py-12 lg:px-12">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 sm:grid-cols-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-xs font-bold text-white">G</div>
+              <span className="font-semibold">GoFree</span>
+            </div>
+            <p className="mt-3 text-xs text-foreground/40">AI testing agents for everything.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground/40">Product</p>
+            <div className="mt-3 flex flex-col gap-2 text-sm text-foreground/50">
+              <Link href="#features" className="hover:text-foreground">Features</Link>
+              <Link href="#how-it-works" className="hover:text-foreground">How it works</Link>
+              <Link href="/signup" className="hover:text-foreground">Start free trial</Link>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground/40">Resources</p>
+            <div className="mt-3 flex flex-col gap-2 text-sm text-foreground/50">
+              <Link href="https://github.com/gofree-ai/gofree" className="hover:text-foreground">GitHub</Link>
+              <Link href="https://github.com/gofree-ai/gofree" className="hover:text-foreground">Documentation</Link>
+              <Link href="https://wopee.io" className="hover:text-foreground">Wopee.io</Link>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground/40">Legal</p>
+            <div className="mt-3 flex flex-col gap-2 text-sm text-foreground/50">
+              <Link href="#" className="hover:text-foreground">Terms of Service</Link>
+              <Link href="#" className="hover:text-foreground">Privacy Policy</Link>
+            </div>
+          </div>
+        </div>
+        <div className="mx-auto mt-8 max-w-5xl border-t border-foreground/5 pt-6 text-center text-xs text-foreground/30">
+          Built by the <Link href="https://wopee.io" className="hover:text-foreground/50">Wopee.io</Link> team
+        </div>
       </footer>
     </main>
   );

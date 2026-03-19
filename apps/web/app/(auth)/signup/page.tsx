@@ -60,7 +60,7 @@ export default function SignupPage() {
       <div className="rounded-2xl border border-foreground/10 bg-white p-6 shadow-sm">
         <div className="mb-6 text-center">
           <h1 className="text-xl font-bold">Create your account</h1>
-          <p className="mt-1 text-sm text-foreground/50">Start building with AI agents in seconds</p>
+          <p className="mt-1 text-sm text-foreground/50">Start testing with AI agents — free forever</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

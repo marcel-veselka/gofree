@@ -61,7 +61,7 @@ export default function LoginPage() {
       <div className="rounded-2xl border border-foreground/10 bg-white p-6 shadow-sm">
         <div className="mb-6 text-center">
           <h1 className="text-xl font-bold">Welcome back</h1>
-          <p className="mt-1 text-sm text-foreground/50">Sign in to your GoFree account</p>
+          <p className="mt-1 text-sm text-foreground/50">Sign in to continue testing</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
