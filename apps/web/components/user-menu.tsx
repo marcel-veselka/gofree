@@ -30,6 +30,8 @@ export function UserMenu() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="true"
         className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-accent"
       >
         {user.image ? (
@@ -52,12 +54,13 @@ export function UserMenu() {
             className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 z-50 mt-1 w-48 rounded-md border bg-background py-1 shadow-md">
+          <div role="menu" className="absolute right-0 z-50 mt-1 w-48 rounded-md border bg-background py-1 shadow-md">
             <div className="border-b px-3 py-2">
               <p className="text-sm font-medium">{user.name}</p>
               <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
             <button
+              role="menuitem"
               onClick={handleSignOut}
               className="w-full px-3 py-2 text-left text-sm hover:bg-accent"
             >

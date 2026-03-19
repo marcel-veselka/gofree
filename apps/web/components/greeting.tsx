@@ -5,9 +5,7 @@ import { authClient } from '@gofree/auth/client';
 export function Greeting() {
   const { data: session } = authClient.useSession();
 
-  if (!session?.user?.name) return null;
-
-  const firstName = session.user.name.split(' ')[0];
+  const firstName = session?.user?.name?.split(' ')[0] ?? session?.user?.email?.split('@')[0] ?? 'there';
 
   return (
     <span className="text-sm font-medium">

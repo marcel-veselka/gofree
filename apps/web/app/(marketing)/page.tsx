@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { MobileNav } from '@/components/mobile-nav';
 
 const testTargets = [
   { label: 'Web apps', icon: '🌐' },
@@ -26,10 +27,10 @@ export default function HomePage() {
             <Link href="#features" className="transition-colors hover:text-foreground">Features</Link>
             <Link href="#how-it-works" className="transition-colors hover:text-foreground">How it works</Link>
             <Link href="#deploy" className="transition-colors hover:text-foreground">Deploy</Link>
-            <Link href="https://github.com" className="transition-colors hover:text-foreground">Docs</Link>
+            <Link href="https://github.com/gofree-ai/gofree" className="transition-colors hover:text-foreground">Docs</Link>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="hidden items-center gap-3 md:flex">
           <Link href="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:text-foreground">
             Sign in
           </Link>
@@ -37,6 +38,7 @@ export default function HomePage() {
             Start free trial
           </Link>
         </div>
+        <MobileNav />
       </nav>
 
       {/* Hero */}
@@ -69,7 +71,7 @@ export default function HomePage() {
               <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
             </Link>
             <Link
-              href="https://github.com"
+              href="https://github.com/gofree-ai/gofree"
               className="inline-flex items-center gap-2 rounded-xl border border-foreground/10 bg-white px-8 py-4 text-base font-semibold text-foreground shadow-sm transition-all hover:border-foreground/20 hover:shadow-md"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -79,6 +81,34 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="mt-4 text-sm text-foreground/40">Free forever. No credit card required.</p>
+        </div>
+
+        {/* Product preview mock */}
+        <div className="relative z-10 mx-auto mt-16 max-w-4xl">
+          <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-[#1e1e2e] shadow-2xl shadow-violet-200/30">
+            <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+              <div className="h-3 w-3 rounded-full bg-red-400" />
+              <div className="h-3 w-3 rounded-full bg-yellow-400" />
+              <div className="h-3 w-3 rounded-full bg-emerald-400" />
+              <span className="ml-2 text-xs text-white/40">GoFree — Test Run #42</span>
+            </div>
+            <div className="p-6 font-mono text-sm leading-relaxed">
+              <p className="text-emerald-400">$ gofree test --url https://myapp.com</p>
+              <p className="mt-2 text-white/60">Mapping application structure...</p>
+              <p className="text-white/60">Found 23 pages, 8 API endpoints, 3 user flows</p>
+              <p className="mt-2 text-white/60">Generating test plan...</p>
+              <p className="text-violet-400">Created 47 test cases across 6 categories</p>
+              <p className="mt-2 text-white/60">Running tests...</p>
+              <p className="text-white/40">  [1/47] Homepage load ........................ <span className="text-emerald-400">PASS</span></p>
+              <p className="text-white/40">  [2/47] Login flow ........................... <span className="text-emerald-400">PASS</span></p>
+              <p className="text-white/40">  [3/47] Cart checkout ........................ <span className="text-emerald-400">PASS</span></p>
+              <p className="text-white/40">  [4/47] API /users GET ....................... <span className="text-emerald-400">PASS</span></p>
+              <p className="text-white/40">  [5/47] DB migration integrity ............... <span className="text-emerald-400">PASS</span></p>
+              <p className="text-white/40">  [6/47] Mobile responsive nav ................ <span className="text-yellow-400">WARN</span></p>
+              <p className="mt-2 text-white/60">...</p>
+              <p className="mt-2 text-emerald-400">Done! 45 passed, 1 warning, 1 skipped. Coverage: 87%</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -133,6 +163,19 @@ export default function HomePage() {
               <h3 className="text-base font-semibold">End-to-end flow testing</h3>
               <p className="mt-1 text-sm text-foreground/50">Test complete business workflows that span UI, APIs, databases, and third-party services in a single agent run.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social proof */}
+      <section className="border-t border-foreground/5 px-6 py-12 lg:px-12">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="text-sm font-medium text-foreground/40 uppercase tracking-wider">Trusted by engineering teams at</p>
+          <div className="mt-6 flex items-center justify-center gap-10 opacity-40 grayscale">
+            <span className="text-lg font-bold">Livesport</span>
+            <span className="text-lg font-bold">Multitude</span>
+            <span className="text-lg font-bold">SYNOT</span>
+            <span className="text-lg font-bold">Inventi</span>
           </div>
         </div>
       </section>
@@ -234,7 +277,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-semibold">Self-hosted (Docker)</h3>
               <p className="mt-2 text-sm text-foreground/50">Run inside your own CI/CD. Full control over security, data, and compliance. One-command Docker deploy.</p>
-              <Link href="https://github.com" className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+              <Link href="https://github.com/gofree-ai/gofree" className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700">
                 View docs <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>

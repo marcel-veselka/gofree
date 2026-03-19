@@ -75,14 +75,14 @@ export default function SignupPage() {
               onChange={(e) => setName(e.target.value)}
               required
               autoComplete="name"
-              placeholder="Marcel Veselka"
+              placeholder="Your full name"
               className="w-full rounded-xl border border-foreground/10 bg-[#fafafa] px-4 py-3 text-sm transition-colors placeholder:text-foreground/30 focus:border-violet-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-100"
             />
           </div>
 
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-xs font-medium text-foreground/70">
-              Work email
+              Email address
             </label>
             <input
               id="email"
@@ -114,7 +114,7 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</div>
+            <div role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</div>
           )}
 
           <button
@@ -128,6 +128,8 @@ export default function SignupPage() {
           <p className="text-center text-xs text-foreground/40">
             Free forever for individuals. No credit card needed.
           </p>
+
+          <p className="text-center text-xs text-foreground/40">By signing up, you agree to our <a href="#" className="underline">Terms</a> and <a href="#" className="underline">Privacy Policy</a>.</p>
         </form>
       </div>
 

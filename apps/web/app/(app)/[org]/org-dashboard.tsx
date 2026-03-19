@@ -19,6 +19,7 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteError, setInviteError] = useState('');
+  const [testUrl, setTestUrl] = useState('');
 
   const isAdmin = org?.role === 'OWNER' || org?.role === 'ADMIN';
 
@@ -49,7 +50,62 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
         </div>
       </div>
 
-      <div className="mt-8 rounded-xl border bg-card shadow-sm">
+      {/* Onboarding card */}
+      <div className="mt-8 rounded-xl border border-violet-200 bg-gradient-to-br from-violet-50 to-indigo-50 p-6 shadow-sm">
+        <h2 className="text-lg font-semibold">Welcome! Let&apos;s run your first test.</h2>
+        <p className="mt-1 text-sm text-foreground/60">Enter your application URL and our AI agents will map it, generate tests, and run them automatically.</p>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            // TODO: wire up to test run creation
+          }}
+          className="mt-4 flex gap-2"
+        >
+          <input
+            type="url"
+            value={testUrl}
+            onChange={(e) => setTestUrl(e.target.value)}
+            placeholder="https://your-app.com"
+            required
+            className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet-200"
+          />
+          <button
+            type="submit"
+            className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
+          >
+            Run test
+          </button>
+        </form>
+      </div>
+
+      {/* Stats row */}
+      <div className="mt-6 grid grid-cols-3 gap-4">
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-xs font-medium text-muted-foreground">Total tests</p>
+          <p className="mt-1 text-2xl font-bold">0</p>
+        </div>
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-xs font-medium text-muted-foreground">Pass rate</p>
+          <p className="mt-1 text-2xl font-bold">&mdash;</p>
+        </div>
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-xs font-medium text-muted-foreground">Last run</p>
+          <p className="mt-1 text-2xl font-bold">&mdash;</p>
+        </div>
+      </div>
+
+      {/* Recent test runs */}
+      <div className="mt-6 rounded-xl border bg-card shadow-sm">
+        <div className="border-b px-6 py-4">
+          <h2 className="text-base font-semibold">Recent test runs</h2>
+        </div>
+        <div className="px-6 py-8 text-center text-sm text-muted-foreground">
+          No test runs yet. Enter a URL above to start your first test.
+        </div>
+      </div>
+
+      {/* Members */}
+      <div className="mt-6 rounded-xl border bg-card shadow-sm">
         <div className="flex items-center justify-between border-b px-6 py-4">
           <h2 className="text-base font-semibold">Members</h2>
           <span className="text-sm text-muted-foreground">{members?.length ?? 0} member{members?.length !== 1 ? 's' : ''}</span>
@@ -116,7 +172,10 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
                       <option value="VIEWER">VIEWER</option>
                     </select>
                     <button
-                      onClick={() => removeMember.mutate({ orgSlug, membershipId: member.id })}
+                      onClick={() => {
+                        if (!window.confirm(`Remove ${member.user.name} from this organization?`)) return;
+                        removeMember.mutate({ orgSlug, membershipId: member.id });
+                      }}
                       className="rounded-lg px-2.5 py-1 text-xs text-destructive hover:bg-destructive/10 transition-colors"
                     >
                       Remove
