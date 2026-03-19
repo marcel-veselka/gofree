@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 const links = [
   { href: '#what-we-test', label: 'What we test' },
-  { href: '#features', label: 'Features' },
   { href: '#how-it-works', label: 'How it works' },
   { href: '#deploy', label: 'Deploy' },
   { href: 'https://github.com/gofree-ai/gofree', label: 'Docs' },

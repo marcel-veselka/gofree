@@ -1,0 +1,169 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: G
+          - generic [ref=e7]: GoFree
+        - generic [ref=e8]:
+          - link "What we test" [ref=e9] [cursor=pointer]:
+            - /url: "#what-we-test"
+          - link "How it works" [ref=e10] [cursor=pointer]:
+            - /url: "#how-it-works"
+          - link "Deploy" [ref=e11] [cursor=pointer]:
+            - /url: "#deploy"
+          - link "Docs" [ref=e12] [cursor=pointer]:
+            - /url: https://github.com/gofree-ai/gofree
+      - generic [ref=e13]:
+        - link "Sign in" [ref=e14] [cursor=pointer]:
+          - /url: /login
+        - link "Start free trial" [ref=e15] [cursor=pointer]:
+          - /url: /signup
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e20]: AI Testing Agents · Open source · Self-hostable
+        - heading "Test everything. Ship faster." [level=1] [ref=e21]:
+          - text: Test everything.
+          - text: Ship faster.
+        - paragraph [ref=e22]: Point AI agents at your app. Get comprehensive test coverage in minutes — no scripts to write.
+        - generic [ref=e23]:
+          - link "Start testing for free" [ref=e24] [cursor=pointer]:
+            - /url: /signup
+            - text: Start testing for free
+            - img [ref=e25]
+          - generic [ref=e27]:
+            - generic [ref=e28]: Free forever. No credit card.
+            - generic [ref=e29]: ·
+            - link "Star on GitHub" [ref=e30] [cursor=pointer]:
+              - /url: https://github.com/gofree-ai/gofree
+              - img [ref=e31]
+              - text: Star on GitHub
+      - generic [ref=e34]:
+        - generic [ref=e39]: "GoFree — Test Run #42"
+        - generic [ref=e40]:
+          - paragraph [ref=e41]: $ gofree test --url https://myapp.com
+          - paragraph [ref=e42]: Mapping application structure...
+          - paragraph [ref=e43]: Found 23 pages, 8 API endpoints, 3 user flows
+          - paragraph [ref=e44]: Generating test plan...
+          - paragraph [ref=e45]: Created 47 test cases across 6 categories
+          - paragraph [ref=e46]: Running tests...
+          - paragraph [ref=e47]: "[1/47] Homepage load ........................ PASS"
+          - paragraph [ref=e48]: "[2/47] Login flow ........................... PASS"
+          - paragraph [ref=e49]: "[3/47] Cart checkout ........................ PASS"
+          - paragraph [ref=e50]: "[4/47] API /users GET ....................... PASS"
+          - paragraph [ref=e51]: "[5/47] DB migration integrity ............... PASS"
+          - paragraph [ref=e52]: "[6/47] Mobile responsive nav ................ WARN"
+          - paragraph [ref=e53]: ...
+          - paragraph [ref=e54]: "Done! 45 passed, 1 warning, 1 skipped. Coverage: 87%"
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - img [ref=e60]
+        - heading "Web application testing" [level=3] [ref=e62]
+        - paragraph [ref=e63]: Autonomous browser testing with Playwright. Agents map your app, create tests, and self-heal when UI changes.
+      - generic [ref=e64]:
+        - img [ref=e66]
+        - heading "Mobile app testing" [level=3] [ref=e68]
+        - paragraph [ref=e69]: Test iOS and Android apps through native frameworks. Agents handle device fragmentation and OS variations.
+      - generic [ref=e70]:
+        - img [ref=e72]
+        - heading "Desktop app testing" [level=3] [ref=e74]
+        - paragraph [ref=e75]: Windows, macOS, Linux. Agents interact with native UI elements, keyboard shortcuts, and system dialogs.
+      - generic [ref=e76]:
+        - img [ref=e78]
+        - heading "API & integration testing" [level=3] [ref=e80]
+        - paragraph [ref=e81]: REST, GraphQL, gRPC, WebSocket. Agents generate test suites from your OpenAPI specs or by exploring endpoints.
+      - generic [ref=e82]:
+        - img [ref=e84]
+        - heading "Database & data testing" [level=3] [ref=e86]
+        - paragraph [ref=e87]: Validate schemas, migrations, data integrity, and query performance. PostgreSQL, MySQL, MongoDB, and more.
+      - generic [ref=e88]:
+        - img [ref=e90]
+        - heading "End-to-end flow testing" [level=3] [ref=e92]
+        - paragraph [ref=e93]: Test complete business workflows that span UI, APIs, databases, and third-party services in a single agent run.
+    - generic [ref=e95]:
+      - heading "From URL to test coverage in 3 steps" [level=2] [ref=e96]
+      - paragraph [ref=e97]: No test scripts to write. No specialized expertise needed. Just results.
+      - generic [ref=e98]:
+        - generic [ref=e99]:
+          - generic [ref=e100]: "1"
+          - heading "Point agents at your app" [level=3] [ref=e101]
+          - paragraph [ref=e102]: Give us a URL, API spec, or describe what to test. Agents crawl, understand structure, and identify critical paths.
+        - generic [ref=e103]:
+          - generic [ref=e104]: "2"
+          - heading "Agents generate & run tests" [level=3] [ref=e105]
+          - paragraph [ref=e106]: AI agents create test plans, write Playwright/API tests, execute them, and stream results in real time. No babysitting.
+        - generic [ref=e107]:
+          - generic [ref=e108]: "3"
+          - heading "Ship with confidence" [level=3] [ref=e109]
+          - paragraph [ref=e110]: Get detailed reports, visual diffs, and regression results. Tests self-heal on every release. Full CI/CD integration.
+    - generic [ref=e112]:
+      - heading "Deploy on your terms" [level=2] [ref=e113]
+      - generic [ref=e114]:
+        - generic [ref=e115]:
+          - img [ref=e117]
+          - heading "Cloud (fully managed)" [level=3] [ref=e119]
+          - paragraph [ref=e120]: Focus on shipping. We host, scale, and update everything. Run tests on our infrastructure with zero setup.
+          - link "Start free trial" [ref=e121] [cursor=pointer]:
+            - /url: /signup
+            - text: Start free trial
+            - generic [ref=e122]: →
+        - generic [ref=e123]:
+          - img [ref=e125]
+          - heading "Self-hosted (Docker)" [level=3] [ref=e127]
+          - paragraph [ref=e128]: Run inside your own CI/CD. Full control over security, data, and compliance. One-command Docker deploy.
+          - link "View docs" [ref=e129] [cursor=pointer]:
+            - /url: https://github.com/gofree-ai/gofree
+            - text: View docs
+            - generic [ref=e130]: →
+    - generic [ref=e132]:
+      - heading "Ready to test everything?" [level=2] [ref=e133]
+      - paragraph [ref=e134]: AI testing agents for web, mobile, desktop, APIs, and databases. Free forever for individuals.
+      - link "Start testing for free" [ref=e136] [cursor=pointer]:
+        - /url: /signup
+        - text: Start testing for free
+        - img [ref=e137]
+      - paragraph [ref=e139]: No credit card required
+    - generic [ref=e140]:
+      - generic [ref=e141]:
+        - generic [ref=e142]:
+          - generic [ref=e143]:
+            - generic [ref=e144]: G
+            - generic [ref=e145]: GoFree
+          - paragraph [ref=e146]: AI testing agents for everything.
+          - paragraph [ref=e147]:
+            - text: By the makers of
+            - link "Wopee.io" [ref=e148] [cursor=pointer]:
+              - /url: https://wopee.io
+        - generic [ref=e149]:
+          - paragraph [ref=e150]: Product
+          - generic [ref=e151]:
+            - link "Features" [ref=e152] [cursor=pointer]:
+              - /url: "#features"
+            - link "How it works" [ref=e153] [cursor=pointer]:
+              - /url: "#how-it-works"
+            - link "Start free trial" [ref=e154] [cursor=pointer]:
+              - /url: /signup
+        - generic [ref=e155]:
+          - paragraph [ref=e156]: Resources
+          - generic [ref=e157]:
+            - link "GitHub" [ref=e158] [cursor=pointer]:
+              - /url: https://github.com/gofree-ai/gofree
+            - link "Documentation" [ref=e159] [cursor=pointer]:
+              - /url: https://github.com/gofree-ai/gofree
+            - link "Wopee.io" [ref=e160] [cursor=pointer]:
+              - /url: https://wopee.io
+        - generic [ref=e161]:
+          - paragraph [ref=e162]: Legal
+          - generic [ref=e163]:
+            - link "Terms of Service" [ref=e164] [cursor=pointer]:
+              - /url: "#"
+            - link "Privacy Policy" [ref=e165] [cursor=pointer]:
+              - /url: "#"
+      - generic [ref=e166]:
+        - text: Built by the
+        - link "Wopee.io" [ref=e167] [cursor=pointer]:
+          - /url: https://wopee.io
+        - text: team
+  - button "Open Next.js Dev Tools" [ref=e173] [cursor=pointer]:
+    - img [ref=e174]
+  - alert [ref=e177]

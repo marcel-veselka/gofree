@@ -15,7 +15,6 @@ export default function HomePage() {
           </div>
           <div className="hidden items-center gap-5 text-sm text-foreground/50 md:flex">
             <Link href="#what-we-test" className="transition-colors hover:text-foreground">What we test</Link>
-            <Link href="#features" className="transition-colors hover:text-foreground">Features</Link>
             <Link href="#how-it-works" className="transition-colors hover:text-foreground">How it works</Link>
             <Link href="#deploy" className="transition-colors hover:text-foreground">Deploy</Link>
             <Link href="https://github.com/gofree-ai/gofree" className="transition-colors hover:text-foreground">Docs</Link>
@@ -153,68 +152,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Social proof */}
-      <section className="border-t border-foreground/5 px-6 py-16 lg:px-12">
-        <p className="text-center text-xs font-medium uppercase tracking-widest text-foreground/30">Built by the team behind</p>
-        <div className="mt-4 flex items-center justify-center">
-          <Link href="https://wopee.io" className="flex items-center gap-2 text-foreground/50 hover:text-foreground transition-colors">
-            <span className="text-lg font-bold">Wopee.io</span>
-            <span className="text-sm">&mdash; AI testing agents used by Livesport, Multitude, SYNOT</span>
-          </Link>
-        </div>
-      </section>
-
-      {/* Core capabilities */}
-      <section id="features" className="border-t border-foreground/5 bg-white px-6 py-20 lg:px-12">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-center text-3xl font-bold sm:text-4xl">
-            Why teams choose{' '}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">GoFree.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-foreground/50">
-            AI-powered testing that eliminates traditional barriers.
-          </p>
-          <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="rounded-2xl border border-violet-100 bg-[#fafafa] p-6 shadow-sm transition-all hover:shadow-md hover:border-violet-200">
-              <div className="mb-1 flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 text-white shadow-sm shadow-violet-200">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" /></svg>
-                </div>
-                <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-semibold text-violet-700">10x faster</span>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">Autonomous test generation</h3>
-              <p className="mt-2 text-sm leading-relaxed text-foreground/60">
-                Agents explore your app, understand its structure, and generate comprehensive test suites automatically. From zero to 80%+ coverage in minutes.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-indigo-100 bg-[#fafafa] p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-200">
-              <div className="mb-1 flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white shadow-sm shadow-indigo-200">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" /></svg>
-                </div>
-                <span className="rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700">Zero maintenance</span>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">Self-healing tests</h3>
-              <p className="mt-2 text-sm leading-relaxed text-foreground/60">
-                When your UI changes, agents adapt tests automatically. No more broken selectors, no more flaky tests, no more maintenance burden.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-emerald-100 bg-[#fafafa] p-6 shadow-sm transition-all hover:shadow-md hover:border-emerald-200">
-              <div className="mb-1 flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-sm shadow-emerald-200">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7m0 0a3 3 0 0 1-3 3m0 3h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Zm-3 6h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Z" /></svg>
-                </div>
-                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">Your infra</span>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">Self-hostable &amp; open source</h3>
-              <p className="mt-2 text-sm leading-relaxed text-foreground/60">
-                One-command Docker deploy. Run agents on your own infrastructure. Full control over data, security, and compliance.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* How it works */}
       <section id="how-it-works" className="border-t border-foreground/5 px-6 py-20 lg:px-12">
         <div className="mx-auto max-w-4xl">
@@ -270,7 +207,7 @@ export default function HomePage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="border-t border-foreground/5 px-6 py-20 lg:px-12">
+      <section className="bg-gradient-to-br from-violet-50 via-indigo-50 to-purple-50 px-6 py-24 lg:px-12">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Ready to test everything?</h2>
           <p className="mt-4 text-foreground/50">AI testing agents for web, mobile, desktop, APIs, and databases. Free forever for individuals.</p>
@@ -296,6 +233,7 @@ export default function HomePage() {
               <span className="font-semibold">GoFree</span>
             </div>
             <p className="mt-3 text-xs text-foreground/40">AI testing agents for everything.</p>
+            <p className="mt-1 text-xs text-foreground/30">By the makers of <Link href="https://wopee.io" className="hover:text-foreground/50">Wopee.io</Link></p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-foreground/40">Product</p>
