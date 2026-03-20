@@ -2,6 +2,7 @@ import { db } from '@gofree/db';
 import { executeAgent } from './executor';
 import { getToolsForTarget, BrowserContext } from './tools';
 import type { ProviderName } from '../providers/registry';
+import { saveScreenshot } from '../../../../apps/web/lib/screenshots';
 
 export type RunProgressEvent =
   | { type: 'run:started'; runId: string; totalCases: number }
@@ -258,6 +259,24 @@ ${assertions?.length ? `\n## Expected Assertions — YOU MUST VERIFY EACH ONE\n$
       });
     }
 
+    // Save screenshots captured during browser execution
+    let screenshotRefs: Array<{ name: string; storagePath: string; capturedAt: string }> = [];
+    if (browserContext) {
+      const captured = browserContext.getScreenshots();
+      for (const ss of captured) {
+        try {
+          const storagePath = await saveScreenshot(runId, ss.name, ss.buffer);
+          screenshotRefs.push({
+            name: ss.name,
+            storagePath,
+            capturedAt: ss.capturedAt.toISOString(),
+          });
+        } catch (err) {
+          console.warn('[runner] Failed to save screenshot:', ss.name, err);
+        }
+      }
+    }
+
     // Create TestResult record
     const testResult = await db.testResult.create({
       data: {
@@ -269,6 +288,7 @@ ${assertions?.length ? `\n## Expected Assertions — YOU MUST VERIFY EACH ONE\n$
         startedAt: caseStartedAt,
         completedAt: caseCompletedAt,
         error: result.error,
+        screenshots: screenshotRefs.length > 0 ? screenshotRefs : undefined,
       },
     });
 
