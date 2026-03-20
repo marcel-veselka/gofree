@@ -75,12 +75,23 @@ export async function executeAgent(
       messages: [
         {
           role: 'user',
-          content: 'Execute the test case according to the system prompt instructions.',
+          content: 'Execute the test case according to the system prompt instructions. You MUST call tools for every step and assertion. Call reportResult as the final tool call.',
         },
       ],
       tools: options.tools,
       maxSteps: options.maxSteps,
       abortSignal: abortController.signal,
+      // Force tool usage until the agent calls reportResult
+      toolChoice: 'required',
+      stopWhen: (event) => {
+        if (event.steps.length === 0) return false;
+        const lastStep = event.steps[event.steps.length - 1];
+        // Stop when agent calls reportResult or reaches reasonable step count
+        const calledReport = lastStep.toolCalls?.some(
+          (tc: any) => tc.toolName === 'reportResult'
+        );
+        return !!calledReport;
+      },
     });
 
     // Extract step data from the response
@@ -95,11 +106,16 @@ export async function executeAgent(
             (r: any) => r.toolCallId === toolCall.toolCallId
           );
 
+          const toolInput = toolCall.args ?? (toolResult as any)?.input ?? null;
+          // AI SDK v3 uses .output, v2 used .result
+          const toolOutput = (toolResult as any)?.output ?? toolResult?.result ?? null;
+
+
           const stepRecord: StepRecord = {
             index: steps.length,
             type: `tool:${toolCall.toolName}`,
-            input: toolCall.args,
-            output: toolResult?.result,
+            input: toolInput,
+            output: toolOutput,
             startedAt,
             completedAt,
           };
@@ -116,13 +132,13 @@ export async function executeAgent(
           }
 
           // Check if tool result is an assertion
-          if (toolResult?.result && isAssertionResult(toolResult.result)) {
+          if (toolOutput && isAssertionResult(toolOutput)) {
             assertions.push({
-              name: toolResult.result.name ?? toolCall.toolName,
-              type: toolResult.result.type ?? toolCall.toolName,
-              expected: toolResult.result.expected,
-              actual: toolResult.result.actual,
-              passed: toolResult.result.passed,
+              name: (toolOutput as any).name ?? toolCall.toolName,
+              type: (toolOutput as any).type ?? toolCall.toolName,
+              expected: (toolOutput as any).expected,
+              actual: (toolOutput as any).actual,
+              passed: (toolOutput as any).passed,
             });
           }
         }

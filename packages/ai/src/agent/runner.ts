@@ -130,12 +130,13 @@ export async function runTestSuite(config: RunConfig): Promise<void> {
 
     const caseStartedAt = new Date();
 
-    // Render the prompt template
+    // Build the system prompt — render template + append structured context
     const templateVars: Record<string, any> = {
       testCase: {
         title: testCase.title,
         steps: JSON.stringify(testCase.steps ?? []),
         expectedAssertions: JSON.stringify(testCase.expectedAssertions ?? []),
+        targetType: testCase.targetType,
       },
       environment: {
         baseUrl: envConfig.baseUrl ?? '',
@@ -145,10 +146,34 @@ export async function runTestSuite(config: RunConfig): Promise<void> {
       },
     };
 
-    const systemPrompt = renderTemplate(
+    const renderedTemplate = renderTemplate(
       agentDefinition.promptTemplate,
       templateVars
     );
+
+    const steps = testCase.steps as Array<Record<string, any>> | null;
+    const assertions = testCase.expectedAssertions as Array<Record<string, any>> | null;
+
+    const systemPrompt = `${renderedTemplate}
+
+## Test Case Details
+- Title: ${testCase.title}
+- Target: ${testCase.targetType}
+- Priority: ${testCase.priority}
+${steps?.length ? `\n## Steps to Execute\n${steps.map((s, i) => `${i + 1}. [${s.type}] ${JSON.stringify(s.params ?? s)}`).join('\n')}` : ''}
+${assertions?.length ? `\n## Expected Assertions — YOU MUST VERIFY EACH ONE\n${assertions.map((a, i) => `${i + 1}. [${a.type}] expected: ${JSON.stringify(a.expected)}${a.target ? ` (target: ${a.target})` : ''}${a.description ? ` — ${a.description}` : ''}`).join('\n')}` : ''}
+
+## CRITICAL INSTRUCTIONS
+1. Execute the test steps using the available tools.
+2. For EVERY expected assertion listed above, you MUST call the corresponding assertion tool:
+   - "status-code" → call assertStatusCode with the actual status code and the expected value
+   - "json-path" → call assertJsonPath with the response JSON, the path, and expected value
+   - "contains" → call assertContains with the text and expected substring
+   - "visible" / "not-visible" → call browserClick or browserNavigate as appropriate
+   - "row-count" → after dbQuery, call assertStatusCode or assertContains to verify
+3. After all assertions, call reportResult with status "passed" or "failed" and a brief summary.
+4. If a step fails, still continue with remaining steps and assertions.
+5. Do NOT skip any assertions — each one must be explicitly verified with a tool call.`;
 
     // Get tools for the target type
     const tools = getToolsForTarget(testCase.targetType);
@@ -201,18 +226,20 @@ export async function runTestSuite(config: RunConfig): Promise<void> {
     }
 
     // Create RunStep records for each step
-    await db.runStep.createMany({
-      data: result.steps.map((step) => ({
-        runId,
-        index: step.index,
-        type: step.type,
-        input: step.input as any,
-        output: step.output as any,
-        error: step.error,
-        startedAt: step.startedAt,
-        completedAt: step.completedAt,
-      })),
-    });
+    if (result.steps.length > 0) {
+      await db.runStep.createMany({
+        data: result.steps.map((step) => ({
+          runId,
+          index: step.index,
+          type: step.type,
+          input: step.input !== undefined ? (step.input as any) : undefined,
+          output: step.output !== undefined ? (step.output as any) : undefined,
+          error: step.error,
+          startedAt: step.startedAt,
+          completedAt: step.completedAt,
+        })),
+      });
+    }
 
     // Create TestResult record
     const testResult = await db.testResult.create({
