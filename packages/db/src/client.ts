@@ -12,7 +12,7 @@ function createClient(): PrismaClient {
   // Use Neon serverless driver for Neon databases (no binary engine needed)
   if (dbUrl.includes('neon.tech')) {
     const pool = new Pool({ connectionString: dbUrl });
-    const adapter = new PrismaNeon(pool);
+    const adapter = new PrismaNeon(pool as any);
     return new PrismaClient({ adapter } as any);
   }
 
