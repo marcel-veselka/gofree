@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { trpc } from '@/lib/trpc';
 import { Badge } from '@/components/ui/badge';
+import { ScreenshotGallery } from '@/components/screenshot-gallery';
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-gray-100 text-gray-800',
@@ -53,12 +54,29 @@ export function RunDetail({
   projectSlug: string;
   runId: string;
 }) {
-  const { data: run } = trpc.run.getById.useQuery({ orgSlug, runId });
+  const { data: run, isLoading, isError } = trpc.run.getById.useQuery({ orgSlug, runId });
   const [expandedResults, setExpandedResults] = useState<Set<string>>(new Set());
   const [stepsOpen, setStepsOpen] = useState(false);
 
-  if (!run) {
+  if (isLoading) {
     return <div className="text-sm text-muted-foreground">Loading...</div>;
+  }
+
+  if (isError || !run) {
+    return (
+      <div className="mx-auto max-w-4xl py-12 text-center">
+        <h2 className="text-lg font-semibold">Run not found</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The run you are looking for does not exist or you do not have access.
+        </p>
+        <Link
+          href={`/${orgSlug}/${projectSlug}/runs`}
+          className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+        >
+          Back to runs
+        </Link>
+      </div>
+    );
   }
 
   const durationMs =
@@ -239,6 +257,18 @@ export function RunDetail({
                       ) : (
                         <p className="text-xs text-muted-foreground">No assertions recorded.</p>
                       )}
+
+                      {/* Screenshots */}
+                      {(() => {
+                        const screenshots = Array.isArray(result.screenshots)
+                          ? (result.screenshots as Array<{ name: string; storagePath: string; capturedAt?: string }>)
+                          : [];
+                        return screenshots.length > 0 ? (
+                          <div className="mt-4">
+                            <ScreenshotGallery screenshots={screenshots} />
+                          </div>
+                        ) : null;
+                      })()}
                     </div>
                   )}
                 </div>
