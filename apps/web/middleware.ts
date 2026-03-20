@@ -8,8 +8,12 @@ const publicPaths = [
   '/api/auth',
   '/api/health',
   '/api/trpc',
+  '/api/v1',
+  '/api/screenshots',
   '/pricing',
 ];
+
+const authPages = ['/', '/login', '/signup'];
 
 function isPublicPath(pathname: string): boolean {
   return publicPaths.some(
@@ -20,9 +24,8 @@ function isPublicPath(pathname: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public paths, static files, and Next.js internals
+  // Allow static files and Next.js internals
   if (
-    isPublicPath(pathname) ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||
     pathname.includes('.')
@@ -30,11 +33,25 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for Better Auth session cookie
+  // Check for session cookie
   const sessionToken =
     request.cookies.get('better-auth.session_token') ??
     request.cookies.get('__Secure-better-auth.session_token');
 
+  // Redirect authenticated users away from auth pages to their dashboard
+  if (sessionToken && authPages.includes(pathname)) {
+    // We don't know the org slug here, so redirect to a /dashboard route
+    // that will resolve the user's first org
+    const dashboardUrl = new URL('/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  // Allow public paths
+  if (isPublicPath(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Require auth for all other paths
   if (!sessionToken) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
@@ -46,7 +63,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all paths except static files and Next.js internals
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };

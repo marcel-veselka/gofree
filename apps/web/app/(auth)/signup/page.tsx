@@ -26,11 +26,11 @@ export default function SignupPage() {
       setLoading(false);
       return;
     }
-    router.push('/');
+    router.push('/dashboard');
   }
 
   async function handleGitHub() {
-    await authClient.signIn.social({ provider: 'github', callbackURL: '/' });
+    await authClient.signIn.social({ provider: 'github', callbackURL: '/dashboard' });
   }
 
   return (

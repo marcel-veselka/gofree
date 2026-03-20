@@ -8,7 +8,7 @@ import { authClient } from '@gofree/auth/client';
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/';
+  const callbackUrl = searchParams.get('callbackUrl') ?? '/dashboard';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +31,7 @@ export default function LoginPage() {
   }
 
   async function handleGitHub() {
-    await authClient.signIn.social({ provider: 'github', callbackURL: callbackUrl });
+    await authClient.signIn.social({ provider: 'github', callbackURL: '/dashboard' });
   }
 
   return (
