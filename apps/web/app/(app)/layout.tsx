@@ -1,6 +1,7 @@
 import { UserMenu } from '@/components/user-menu';
-import { Greeting } from '@/components/greeting';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 import { OrgSwitcher } from '@/components/org-switcher';
+import { SidebarNav } from '@/components/sidebar-nav';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,8 +12,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-background text-xs font-bold">G</div>
           <span className="font-semibold tracking-tight">GoFree</span>
         </div>
-        <nav className="flex-1 p-4">
+        <div className="p-4">
           <OrgSwitcher />
+        </div>
+        <nav className="flex-1 overflow-y-auto px-3 pb-4">
+          <SidebarNav />
         </nav>
       </aside>
       {/* Main content */}
@@ -23,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="font-semibold">GoFree</span>
           </div>
           <div className="flex-1 px-4">
-            <Greeting />
+            <Breadcrumbs />
           </div>
           <UserMenu />
         </header>

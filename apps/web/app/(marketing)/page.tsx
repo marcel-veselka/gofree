@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { MobileNav } from '@/components/mobile-nav';
+import { LandingNavAuth } from '@/components/landing-nav-auth';
 
 export default function HomePage() {
   return (
@@ -21,12 +22,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="hidden items-center gap-3 md:flex">
-          <Link href="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-foreground/60 transition-colors hover:text-foreground">
-            Sign in
-          </Link>
-          <Link href="/signup" className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-violet-200 transition-all hover:shadow-lg hover:shadow-violet-300">
-            Start free trial
-          </Link>
+          <LandingNavAuth />
         </div>
         <MobileNav />
       </nav>

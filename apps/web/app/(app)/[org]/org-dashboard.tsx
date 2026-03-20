@@ -1,7 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { trpc } from '@/lib/trpc';
+import { StatCard } from '@/components/stat-card';
+import { CreateDialog } from '@/components/create-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 const ROLE_COLORS: Record<string, string> = {
   OWNER: 'bg-amber-100 text-amber-800',
@@ -10,8 +17,66 @@ const ROLE_COLORS: Record<string, string> = {
   VIEWER: 'bg-gray-100 text-gray-800',
 };
 
+function CreateProjectForm({ orgSlug, close }: { orgSlug: string; close: () => void }) {
+  const utils = trpc.useUtils();
+  const createProject = trpc.project.create.useMutation({
+    onSuccess: () => {
+      utils.project.list.invalidate();
+      close();
+    },
+  });
+
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    try {
+      await createProject.mutateAsync({ orgSlug, name, description: description || undefined });
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Failed to create project');
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="project-name">Project name</Label>
+        <Input
+          id="project-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="My API Tests"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="project-desc">Description (optional)</Label>
+        <Textarea
+          id="project-desc"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What are you testing?"
+          rows={2}
+        />
+      </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <button
+        type="submit"
+        disabled={createProject.isPending}
+        className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+      >
+        {createProject.isPending ? 'Creating...' : 'Create project'}
+      </button>
+    </form>
+  );
+}
+
 export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
   const { data: org } = trpc.org.getBySlug.useQuery({ orgSlug });
+  const { data: projects } = trpc.project.list.useQuery({ orgSlug });
   const { data: members, refetch: refetchMembers } = trpc.member.list.useQuery({ orgSlug });
   const addMember = trpc.member.add.useMutation({ onSuccess: () => refetchMembers() });
   const updateRole = trpc.member.updateRole.useMutation({ onSuccess: () => refetchMembers() });
@@ -19,9 +84,9 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteError, setInviteError] = useState('');
-  const [testUrl, setTestUrl] = useState('');
 
   const isAdmin = org?.role === 'OWNER' || org?.role === 'ADMIN';
+  const projectCount = projects?.length ?? 0;
 
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
@@ -35,73 +100,77 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white">
-          {(org?.name ?? orgSlug)[0]?.toUpperCase()}
+    <div className="mx-auto max-w-4xl">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white">
+            {(org?.name ?? orgSlug)[0]?.toUpperCase()}
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">{org?.name ?? orgSlug}</h1>
+            {org?.role && (
+              <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[org.role]}`}>
+                {org.role}
+              </span>
+            )}
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold">{org?.name ?? orgSlug}</h1>
-          {org?.role && (
-            <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[org.role]}`}>
-              {org.role}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Onboarding card */}
-      <div className="mt-8 rounded-xl border border-violet-200 bg-gradient-to-br from-violet-50 to-indigo-50 p-6 shadow-sm">
-        <h2 className="text-lg font-semibold">Welcome! Let&apos;s run your first test.</h2>
-        <p className="mt-1 text-sm text-foreground/60">Enter your application URL and our AI agents will map it, generate tests, and run them automatically.</p>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            // TODO: wire up to test run creation
-          }}
-          className="mt-4 flex gap-2"
+        <CreateDialog
+          trigger={
+            <button className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all">
+              New project
+            </button>
+          }
+          title="Create project"
         >
-          <input
-            type="url"
-            value={testUrl}
-            onChange={(e) => setTestUrl(e.target.value)}
-            placeholder="https://your-app.com"
-            required
-            className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet-200"
-          />
-          <button
-            type="submit"
-            className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
-          >
-            Run test
-          </button>
-        </form>
+          {({ close }) => <CreateProjectForm orgSlug={orgSlug} close={close} />}
+        </CreateDialog>
       </div>
 
-      {/* Stats row */}
+      {/* Stats */}
       <div className="mt-6 grid grid-cols-3 gap-4">
-        <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-muted-foreground">Total tests</p>
-          <p className="mt-1 text-2xl font-bold">0</p>
-        </div>
-        <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-muted-foreground">Pass rate</p>
-          <p className="mt-1 text-2xl font-bold">&mdash;</p>
-        </div>
-        <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-xs font-medium text-muted-foreground">Last run</p>
-          <p className="mt-1 text-2xl font-bold">&mdash;</p>
-        </div>
+        <StatCard label="Projects" value={projectCount} />
+        <StatCard label="Members" value={members?.length ?? 0} />
+        <StatCard label="Test suites" value="—" />
       </div>
 
-      {/* Recent test runs */}
+      {/* Projects */}
       <div className="mt-6 rounded-xl border bg-card shadow-sm">
-        <div className="border-b px-6 py-4">
-          <h2 className="text-base font-semibold">Recent test runs</h2>
+        <div className="flex items-center justify-between border-b px-6 py-4">
+          <h2 className="text-base font-semibold">Projects</h2>
+          <span className="text-sm text-muted-foreground">{projectCount} project{projectCount !== 1 ? 's' : ''}</span>
         </div>
-        <div className="px-6 py-8 text-center text-sm text-muted-foreground">
-          No test runs yet. Enter a URL above to start your first test.
-        </div>
+
+        {projectCount === 0 ? (
+          <div className="px-6 py-12 text-center">
+            <p className="text-sm text-muted-foreground">No projects yet.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Create your first project to start testing.</p>
+          </div>
+        ) : (
+          <div className="divide-y">
+            {projects?.map((p) => (
+              <Link
+                key={p.id}
+                href={`/${orgSlug}/${p.slug}`}
+                className="flex items-center justify-between px-6 py-4 hover:bg-muted/30 transition-colors"
+              >
+                <div>
+                  <p className="text-sm font-medium">{p.name}</p>
+                  {p.description && (
+                    <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{p.description}</p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{new Date(p.createdAt).toLocaleDateString()}</span>
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Members */}
@@ -114,13 +183,13 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
         {isAdmin && (
           <div className="border-b px-6 py-4">
             <form onSubmit={handleInvite} className="flex gap-2">
-              <input
+              <Input
                 type="email"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 placeholder="Invite by email address..."
                 required
-                className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="flex-1"
               />
               <button
                 type="submit"
@@ -151,9 +220,9 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_COLORS[member.role]}`}>
+                <Badge variant="secondary" className={ROLE_COLORS[member.role]}>
                   {member.role}
-                </span>
+                </Badge>
                 {isAdmin && member.role !== 'OWNER' && (
                   <>
                     <select
@@ -185,9 +254,6 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
               </div>
             </div>
           ))}
-          {!members?.length && (
-            <p className="px-6 py-8 text-center text-sm text-muted-foreground">No members yet. Invite someone above.</p>
-          )}
         </div>
       </div>
     </div>
