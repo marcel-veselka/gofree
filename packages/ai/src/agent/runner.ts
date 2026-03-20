@@ -1,6 +1,6 @@
 import { db } from '@gofree/db';
 import { executeAgent } from './executor';
-import { getToolsForTarget } from './tools';
+import { getToolsForTarget, BrowserContext } from './tools';
 import type { ProviderName } from '../providers/registry';
 
 export type RunProgressEvent =
@@ -175,8 +175,25 @@ ${assertions?.length ? `\n## Expected Assertions — YOU MUST VERIFY EACH ONE\n$
 4. If a step fails, still continue with remaining steps and assertions.
 5. Do NOT skip any assertions — each one must be explicitly verified with a tool call.`;
 
-    // Get tools for the target type
-    const tools = getToolsForTarget(testCase.targetType);
+    // Create browser context for WEB tests, simulated for others
+    let browserContext: BrowserContext | undefined;
+    if (testCase.targetType === 'WEB' || testCase.targetType === 'CROSS_PLATFORM') {
+      browserContext = new BrowserContext({
+        headless: true,
+        baseUrl: envConfig.baseUrl as string | undefined,
+        viewport: envConfig.viewport as { width: number; height: number } | undefined,
+      });
+      try {
+        await browserContext.launch();
+      } catch (launchErr) {
+        // If browser can't launch, fall back to simulated tools
+        console.warn('[runner] Failed to launch browser, using simulated tools:', launchErr);
+        browserContext = undefined;
+      }
+    }
+
+    // Get tools for the target type (with real browser if available)
+    const tools = getToolsForTarget(testCase.targetType, { browserContext });
 
     // Get agent config defaults
     const agentConfig =
@@ -272,6 +289,11 @@ ${assertions?.length ? `\n## Expected Assertions — YOU MUST VERIFY EACH ONE\n$
     // Track token usage
     totalPromptTokens += result.totalTokens.prompt;
     totalCompletionTokens += result.totalTokens.completion;
+
+    // Close browser context for this test case
+    if (browserContext) {
+      await browserContext.close();
+    }
 
     await onProgress?.({
       type: 'case:completed',

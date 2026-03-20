@@ -10,8 +10,12 @@ import {
   browserNavigate,
   browserScreenshot,
 } from './browser-simulate';
+import { createBrowserTools } from './browser-real';
 import { dbQuery } from './db-query';
 import { reportResult } from './report-result';
+
+export { BrowserContext } from './browser-context';
+export { createBrowserTools } from './browser-real';
 
 const assertTools: Record<string, CoreTool> = {
   assertStatusCode,
@@ -19,24 +23,26 @@ const assertTools: Record<string, CoreTool> = {
   assertContains,
 };
 
-const browserTools: Record<string, CoreTool> = {
+const simulatedBrowserTools: Record<string, CoreTool> = {
   browserNavigate,
   browserClick,
   browserFill,
   browserScreenshot,
 };
 
-const allTools: Record<string, CoreTool> = {
-  apiCall,
-  ...assertTools,
-  ...browserTools,
-  dbQuery,
-  reportResult,
-};
+interface GetToolsOptions {
+  /** Pass a BrowserContext to use real Playwright tools instead of simulated ones */
+  browserContext?: InstanceType<typeof import('./browser-context').BrowserContext>;
+}
 
 export function getToolsForTarget(
-  targetType: string
+  targetType: string,
+  options?: GetToolsOptions
 ): Record<string, CoreTool> {
+  const browserTools = options?.browserContext
+    ? createBrowserTools(options.browserContext)
+    : simulatedBrowserTools;
+
   switch (targetType) {
     case 'WEB':
       return {
@@ -57,9 +63,14 @@ export function getToolsForTarget(
         reportResult,
       };
     case 'CROSS_PLATFORM':
-      return { ...allTools };
+      return {
+        apiCall,
+        ...browserTools,
+        ...assertTools,
+        dbQuery,
+        reportResult,
+      };
     default:
-      // MOBILE, DESKTOP, and any other target type
       return {
         ...assertTools,
         ...browserTools,
@@ -69,5 +80,11 @@ export function getToolsForTarget(
 }
 
 export function getAllTools(): Record<string, CoreTool> {
-  return { ...allTools };
+  return {
+    apiCall,
+    ...assertTools,
+    ...simulatedBrowserTools,
+    dbQuery,
+    reportResult,
+  };
 }

@@ -3,4 +3,4 @@ export { streamChat } from './chat/stream';
 export { executeAgent } from './agent/executor';
 export { runTestSuite } from './agent/runner';
 export type { RunProgressEvent } from './agent/runner';
-export { getToolsForTarget, getAllTools } from './agent/tools/index';
+export { getToolsForTarget, getAllTools, BrowserContext } from './agent/tools/index';
