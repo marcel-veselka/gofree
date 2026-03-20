@@ -50,6 +50,9 @@ importers:
       '@gofree/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@gofree/realtime':
+        specifier: workspace:*
+        version: link:../../packages/realtime
       '@gofree/ui':
         specifier: workspace:*
         version: link:../../packages/ui

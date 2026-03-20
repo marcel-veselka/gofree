@@ -56,16 +56,12 @@ export const runRouter = t.router({
         },
       });
 
-      // Enqueue Trigger.dev task
-      // In development without Trigger.dev running, we'll catch the error
-      try {
-        const { tasks } = await import('@trigger.dev/sdk/v3');
-        // Dynamic import to avoid bundling issues in the API package
-        // The actual task trigger happens via HTTP to the Trigger.dev server
-      } catch {
-        // Trigger.dev SDK not available — run will stay PENDING
-        // In production, the worker polls for PENDING runs
-      }
+      // Execute the run — in dev mode, run directly; in prod, enqueue via Trigger.dev
+      const { runTestSuite } = await import('@gofree/ai');
+      // Fire and forget — don't await, return runId immediately
+      runTestSuite({ runId: run.id }).catch((err) => {
+        console.error(`[run.trigger] Run ${run.id} failed:`, err);
+      });
 
       return { runId: run.id };
     }),
