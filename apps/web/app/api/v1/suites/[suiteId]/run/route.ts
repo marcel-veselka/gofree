@@ -66,6 +66,7 @@ export async function POST(
   const run = await db.run.create({
     data: {
       projectId: suite.projectId,
+      userId: 'api-key',
       type: 'TEST',
       status: 'PENDING',
       testSuiteId: suiteId,
