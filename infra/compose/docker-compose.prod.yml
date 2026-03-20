@@ -1,48 +1,92 @@
 services:
   web:
-    image: gofree/web:latest
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.web
+      args:
+        DATABASE_URL: postgresql://gofree:${POSTGRES_PASSWORD:-gofree}@postgres:5432/gofree
+        BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+        BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
     ports:
       - '3000:3000'
-    env_file: .env
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-
-  worker:
-    image: gofree/worker:latest
-    env_file: .env
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-
-  postgres:
-    image: pgvector/pgvector:pg16
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: gofree
-      POSTGRES_USER: gofree
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      DATABASE_URL: postgresql://gofree:${POSTGRES_PASSWORD:-gofree}@postgres:5432/gofree
+      REDIS_URL: redis://redis:6379
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U gofree']
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3000/api/health || exit 1']
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    networks:
+      - gofree-net
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.worker
+    environment:
+      DATABASE_URL: postgresql://gofree:${POSTGRES_PASSWORD:-gofree}@postgres:5432/gofree
+      REDIS_URL: redis://redis:6379
+      TRIGGER_API_KEY: ${TRIGGER_API_KEY}
+      TRIGGER_API_URL: ${TRIGGER_API_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gofree-net
+    restart: unless-stopped
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: gofree
+      POSTGRES_USER: gofree
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gofree}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U gofree']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gofree-net
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
+    ports:
+      - '6379:6379'
     volumes:
       - redisdata:/data
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - gofree-net
+    restart: unless-stopped
 
 volumes:
   pgdata:
   redisdata:
+
+networks:
+  gofree-net:
+    driver: bridge
