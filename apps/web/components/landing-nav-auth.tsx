@@ -1,24 +1,28 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { authClient } from '@gofree/auth/client';
-import { trpc } from '@/lib/trpc';
 
+/**
+ * Session-aware nav for the landing page.
+ * Only checks auth if a session cookie exists — avoids unnecessary
+ * API calls and browser permission prompts for anonymous visitors.
+ */
 export function LandingNavAuth() {
-  const { data: session, isPending } = authClient.useSession();
-  const { data: orgs } = trpc.org.list.useQuery(undefined, {
-    enabled: !!session?.user,
-  });
+  const [hasSession, setHasSession] = useState(false);
 
-  if (isPending) {
-    return <div className="h-9 w-24" />; // placeholder to prevent layout shift
-  }
+  useEffect(() => {
+    // Check for Better Auth session cookie without making an API call
+    const hasCookie = document.cookie
+      .split(';')
+      .some((c) => c.trim().startsWith('better-auth.session_token='));
+    setHasSession(hasCookie);
+  }, []);
 
-  if (session?.user) {
-    const dashboardHref = orgs?.[0]?.slug ? `/${orgs[0].slug}` : '/';
+  if (hasSession) {
     return (
       <Link
-        href={dashboardHref}
+        href="/"
         className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-violet-200 transition-all hover:shadow-lg hover:shadow-violet-300"
       >
         Go to Dashboard
