@@ -10,6 +10,7 @@ enum RunType {
   CHAT
   AGENT
   TOOL
+  TEST
 }
 
 enum MessageRole {
@@ -29,17 +30,25 @@ model Run {
   startedAt   DateTime?
   completedAt DateTime?
   error       String?
-  tokenUsage  Json?
-  createdAt   DateTime  @default(now())
+  tokenUsage        Json?
+  testSuiteId       String?
+  environmentId     String?
+  agentDefinitionId String?
+  createdAt         DateTime  @default(now())
 
-  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  steps     RunStep[]
-  artifacts RunArtifact[]
-  logs      RunLog[]
-  comments  Comment[]
+  project         Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  testSuite       TestSuite?       @relation(fields: [testSuiteId], references: [id])
+  environment     TestEnvironment? @relation(fields: [environmentId], references: [id])
+  agentDefinition AgentDefinition? @relation(fields: [agentDefinitionId], references: [id])
+  steps           RunStep[]
+  artifacts       RunArtifact[]
+  logs            RunLog[]
+  comments        Comment[]
+  testResults     TestResult[]
 
   @@index([projectId, status])
   @@index([userId])
+  @@index([testSuiteId])
   @@map("runs")
 }
 

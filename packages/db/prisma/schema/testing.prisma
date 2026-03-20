@@ -1,0 +1,151 @@
+// Testing domain models — AI testing agents for web, mobile, desktop, API, DB
+
+enum TargetType {
+  WEB
+  MOBILE
+  DESKTOP
+  API
+  DATABASE
+  CROSS_PLATFORM
+}
+
+enum TestStatus {
+  PASSED
+  FAILED
+  SKIPPED
+  FLAKY
+  ERROR
+}
+
+enum Priority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model TestSuite {
+  id          String     @id @default(cuid())
+  projectId   String
+  name        String
+  slug        String
+  description String?
+  targetType  TargetType
+  config      Json?      // schedule, parallelism, retry policy, tags
+  archived    Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  testCases TestCase[]
+  runs      Run[]
+
+  @@unique([projectId, slug])
+  @@index([projectId, archived])
+  @@map("test_suites")
+}
+
+model TestCase {
+  id                 String     @id @default(cuid())
+  suiteId            String
+  title              String
+  targetType         TargetType
+  priority           Priority   @default(MEDIUM)
+  position           Int
+  steps              Json?      // ordered array of step objects
+  expectedAssertions Json?      // array of assertion definitions
+  targetConfig       Json?      // target-specific config (browser, device, db dialect, etc.)
+  tags               String[]
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  suite       TestSuite    @relation(fields: [suiteId], references: [id], onDelete: Cascade)
+  testResults TestResult[]
+
+  // pgvector embedding column added via raw SQL migration
+  // embedding Unsupported("vector(1536)")
+
+  @@index([suiteId, position])
+  @@index([targetType])
+  @@map("test_cases")
+}
+
+model TestEnvironment {
+  id        String     @id @default(cuid())
+  projectId String
+  name      String
+  slug      String
+  targetType TargetType
+  config    Json?      // baseUrl, browser, viewport, device, headers, etc.
+  secrets   Json?      // encrypted sensitive values — masked in API responses
+  isDefault Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  runs        Run[]
+  testResults TestResult[]
+
+  @@unique([projectId, slug])
+  @@map("test_environments")
+}
+
+model AgentDefinition {
+  id               String       @id @default(cuid())
+  projectId        String
+  name             String
+  slug             String
+  promptTemplate   String
+  tools            Json?        // list of enabled tools/capabilities
+  model            String       @default("claude-sonnet-4-20250514")
+  supportedTargets TargetType[]
+  version          Int          @default(1)
+  defaultConfig    Json?        // maxSteps, timeoutMs, retryPolicy, screenshotOnFailure
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  runs    Run[]
+
+  @@unique([projectId, slug, version])
+  @@map("agent_definitions")
+}
+
+model TestResult {
+  id            String     @id @default(cuid())
+  runId         String
+  testCaseId    String
+  environmentId String?
+  status        TestStatus
+  durationMs    Int?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  error         String?
+  screenshots   Json?      // array of {name, storagePath, capturedAt}
+  retryCount    Int        @default(0)
+  createdAt     DateTime   @default(now())
+
+  run         Run             @relation(fields: [runId], references: [id], onDelete: Cascade)
+  testCase    TestCase        @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  environment TestEnvironment? @relation(fields: [environmentId], references: [id])
+  assertions  Assertion[]
+
+  @@index([runId])
+  @@index([testCaseId])
+  @@map("test_results")
+}
+
+model Assertion {
+  id           String  @id @default(cuid())
+  testResultId String
+  name         String
+  type         String  // equals, contains, visible, status-code, row-count, json-path, visual, etc.
+  expected     Json?
+  actual       Json?
+  passed       Boolean
+
+  testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+
+  @@index([testResultId])
+  @@map("assertions")
+}
