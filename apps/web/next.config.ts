@@ -12,7 +12,10 @@ const nextConfig: NextConfig = {
     '@gofree/realtime',
   ],
   outputFileTracingIncludes: {
-    '/api/**': ['../../node_modules/.prisma/client/**'],
+    '/api/**': [
+      '../../node_modules/.prisma/client/**',
+      '../../packages/db/node_modules/.prisma/client/**',
+    ],
   },
 };
 

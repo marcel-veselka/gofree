@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm --filter @gofree/db db:generate && pnpm --filter @gofree/web build",
+  "buildCommand": "cd packages/db && npx prisma generate --schema=prisma/schema && cd ../.. && pnpm --filter @gofree/web build",
   "installCommand": "pnpm install",
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs"
