@@ -244,10 +244,10 @@ export function RunDetail({
                                     </Badge>
                                   </td>
                                   <td className="px-3 py-2 text-muted-foreground">
-                                    {assertion.expected ?? '--'}
+                                    {assertion.expected != null ? String(assertion.expected) : '--'}
                                   </td>
                                   <td className="px-3 py-2 text-muted-foreground">
-                                    {assertion.actual ?? '--'}
+                                    {assertion.actual != null ? String(assertion.actual) : '--'}
                                   </td>
                                 </tr>
                               ))}
