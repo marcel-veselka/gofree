@@ -7,27 +7,40 @@ on:
     branches: [main]
 
 jobs:
-  ci:
+  lint-and-typecheck:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
-
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @gofree/web typecheck
+      - run: pnpm --filter @gofree/db typecheck
+      - run: pnpm --filter @gofree/web lint
+      - run: pnpm --filter @gofree/db lint
+      - run: pnpm format:check
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Type check
-        run: pnpm typecheck
-
-      - name: Build
-        run: pnpm build
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @gofree/web build
+        env:
+          DATABASE_URL: postgresql://gofree:gofree@localhost:5432/gofree
+          BETTER_AUTH_SECRET: ci-test-secret-that-is-at-least-32-chars
+          BETTER_AUTH_URL: http://localhost:3000
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
