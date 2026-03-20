@@ -7,6 +7,7 @@ import { testCaseRouter } from './routers/test-cases';
 import { testEnvironmentRouter } from './routers/test-environments';
 import { agentDefinitionRouter } from './routers/agent-definitions';
 import { testResultRouter } from './routers/test-results';
+import { runRouter } from './routers/run';
 
 export { publicProcedure, protectedProcedure, orgProcedure } from './procedures';
 
@@ -19,6 +20,7 @@ export const appRouter = t.router({
   testEnvironment: testEnvironmentRouter,
   agentDefinition: agentDefinitionRouter,
   testResult: testResultRouter,
+  run: runRouter,
 });
 
 export type AppRouter = typeof appRouter;

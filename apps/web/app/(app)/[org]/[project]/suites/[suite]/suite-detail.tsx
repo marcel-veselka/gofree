@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { CreateDialog } from '@/components/create-dialog';
+import { RunProgress } from '@/components/run-progress';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -157,9 +158,17 @@ export function SuiteDetail({
     { enabled: !!suite?.id }
   );
 
+  const [activeRunId, setActiveRunId] = useState<string | null>(null);
+
   const utils = trpc.useUtils();
   const archiveSuite = trpc.testSuite.archive.useMutation({
     onSuccess: () => utils.testSuite.getBySlug.invalidate(),
+  });
+  const triggerRun = trpc.run.trigger.useMutation({
+    onSuccess: (data) => {
+      setActiveRunId(data.runId);
+      utils.testSuite.runHistory.invalidate();
+    },
   });
 
   if (!suite) {
@@ -182,6 +191,13 @@ export function SuiteDetail({
           )}
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => triggerRun.mutate({ orgSlug, suiteId: suite.id })}
+            disabled={triggerRun.isPending || suite.testCases.length === 0}
+            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 transition-all disabled:opacity-50"
+          >
+            {triggerRun.isPending ? 'Starting...' : 'Run suite'}
+          </button>
           <CreateDialog
             trigger={
               <button className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all">
@@ -263,6 +279,13 @@ export function SuiteDetail({
           </div>
         )}
       </div>
+
+      {/* Active Run Progress */}
+      {activeRunId && (
+        <div className="mt-6">
+          <RunProgress runId={activeRunId} />
+        </div>
+      )}
 
       {/* Recent Runs */}
       <div className="mt-6 rounded-xl border bg-card shadow-sm">

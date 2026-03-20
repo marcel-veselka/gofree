@@ -9,12 +9,13 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@trigger.dev/sdk": "^3.0.0",
     "@gofree/ai": "workspace:*",
     "@gofree/core": "workspace:*",
     "@gofree/db": "workspace:*",
     "@gofree/mcp": "workspace:*",
-    "@gofree/search": "workspace:*"
+    "@gofree/search": "workspace:*",
+    "@trigger.dev/sdk": "^3.0.0",
+    "redis": "^5.11.0"
   },
   "devDependencies": {
     "@gofree/config": "workspace:*",
