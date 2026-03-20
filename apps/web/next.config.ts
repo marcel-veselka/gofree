@@ -8,7 +8,12 @@ const nextConfig: NextConfig = {
     '@gofree/core',
     '@gofree/db',
     '@gofree/ui',
+    '@gofree/ai',
+    '@gofree/realtime',
   ],
+  outputFileTracingIncludes: {
+    '/api/**': ['../../node_modules/.prisma/client/**'],
+  },
 };
 
 export default nextConfig;
