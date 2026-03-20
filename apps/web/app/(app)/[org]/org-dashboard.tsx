@@ -10,6 +10,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+const RUN_STATUS_STYLES: Record<string, string> = {
+  COMPLETED: 'bg-green-100 text-green-800',
+  FAILED: 'bg-red-100 text-red-800',
+  RUNNING: 'bg-blue-100 text-blue-800',
+  PENDING: 'bg-yellow-100 text-yellow-800',
+  CANCELLED: 'bg-gray-100 text-gray-800',
+};
+
 const ROLE_COLORS: Record<string, string> = {
   OWNER: 'bg-amber-100 text-amber-800',
   ADMIN: 'bg-blue-100 text-blue-800',
@@ -78,6 +86,8 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
   const { data: org } = trpc.org.getBySlug.useQuery({ orgSlug });
   const { data: projects } = trpc.project.list.useQuery({ orgSlug });
   const { data: members, refetch: refetchMembers } = trpc.member.list.useQuery({ orgSlug });
+  const { data: stats } = trpc.dashboard.stats.useQuery({ orgSlug });
+  const { data: recentRuns } = trpc.dashboard.recentRuns.useQuery({ orgSlug });
   const addMember = trpc.member.add.useMutation({ onSuccess: () => refetchMembers() });
   const updateRole = trpc.member.updateRole.useMutation({ onSuccess: () => refetchMembers() });
   const removeMember = trpc.member.remove.useMutation({ onSuccess: () => refetchMembers() });
@@ -129,10 +139,11 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
       </div>
 
       {/* Stats */}
-      <div className="mt-6 grid grid-cols-3 gap-4">
-        <StatCard label="Projects" value={projectCount} />
-        <StatCard label="Members" value={members?.length ?? 0} />
-        <StatCard label="Test suites" value="—" />
+      <div className="mt-6 grid grid-cols-4 gap-4">
+        <StatCard label="Projects" value={stats?.projectCount ?? projectCount} />
+        <StatCard label="Test suites" value={stats?.suiteCount ?? '—'} />
+        <StatCard label="Test cases" value={stats?.caseCount ?? '—'} />
+        <StatCard label="Pass rate" value={stats?.passRate != null ? `${stats.passRate}%` : '—'} />
       </div>
 
       {/* Projects */}
@@ -172,6 +183,35 @@ export function OrgDashboard({ orgSlug }: { orgSlug: string }) {
           </div>
         )}
       </div>
+
+      {/* Recent activity */}
+      {recentRuns && recentRuns.length > 0 && (
+        <div className="mt-6 rounded-xl border bg-card shadow-sm">
+          <div className="flex items-center justify-between border-b px-6 py-4">
+            <h2 className="text-base font-semibold">Recent activity</h2>
+            <span className="text-sm text-muted-foreground">Last {recentRuns.length} run{recentRuns.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div className="divide-y">
+            {recentRuns.map((run) => (
+              <div
+                key={run.id}
+                className="flex items-center justify-between px-6 py-3 hover:bg-muted/30 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className={RUN_STATUS_STYLES[run.status] ?? 'bg-gray-100 text-gray-800'}>
+                    {run.status}
+                  </Badge>
+                  <span className="text-sm font-medium">{run.testSuite?.name ?? 'Unknown suite'}</span>
+                </div>
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>{run._count.testResults} result{run._count.testResults !== 1 ? 's' : ''}</span>
+                  <span>{new Date(run.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Members */}
       <div className="mt-6 rounded-xl border bg-card shadow-sm">
