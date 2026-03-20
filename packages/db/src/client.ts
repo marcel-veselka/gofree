@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { Pool } from '@neondatabase/serverless';
+import { PrismaNeon } from '@prisma/adapter-neon';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -7,18 +9,14 @@ const globalForPrisma = globalThis as unknown as {
 function createClient(): PrismaClient {
   const dbUrl = process.env.DATABASE_URL ?? '';
 
-  // Use Neon serverless adapter for Neon databases (works on Vercel without binary engine)
+  // Use Neon serverless driver for Neon databases (no binary engine needed)
   if (dbUrl.includes('neon.tech')) {
-    const { Pool } = require('@neondatabase/serverless');
-    const { PrismaNeon } = require('@prisma/adapter-neon');
-
     const pool = new Pool({ connectionString: dbUrl });
     const adapter = new PrismaNeon(pool);
-
     return new PrismaClient({ adapter } as any);
   }
 
-  // Standard binary engine for local dev (PostgreSQL)
+  // Standard binary engine for local PostgreSQL
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
