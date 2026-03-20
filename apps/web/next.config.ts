@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  // output: 'standalone', — disabled for Vercel compatibility with Prisma in pnpm monorepo
   transpilePackages: [
     '@gofree/api',
     '@gofree/auth',
