@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { GenerateTestsForm } from '@/components/generate-tests-form';
 
 const TARGET_TYPES = ['WEB', 'MOBILE', 'DESKTOP', 'API', 'DATABASE', 'CROSS_PLATFORM'] as const;
 
@@ -81,7 +82,7 @@ function CreateSuiteForm({
       </div>
       <div className="space-y-2">
         <Label>Target type</Label>
-        <Select value={targetType} onValueChange={setTargetType}>
+        <Select value={targetType} onValueChange={(v) => v && setTargetType(v)}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -141,6 +142,11 @@ export function ProjectDetail({
             <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
           )}
         </div>
+      </div>
+
+      {/* Generate Tests */}
+      <div className="mt-6">
+        <GenerateTestsForm orgSlug={orgSlug} projectSlug={projectSlug} />
       </div>
 
       {/* Tabs */}
