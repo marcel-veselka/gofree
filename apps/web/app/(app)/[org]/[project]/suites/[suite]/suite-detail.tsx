@@ -6,18 +6,7 @@ import Link from 'next/link';
 import { CreateDialog } from '@/components/create-dialog';
 import { RunProgress } from '@/components/run-progress';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
-const TARGET_TYPES = ['WEB', 'MOBILE', 'DESKTOP', 'API', 'DATABASE', 'CROSS_PLATFORM'] as const;
-const PRIORITIES = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const;
+import { TestCaseEditor } from './test-case-editor';
 
 const TARGET_COLORS: Record<string, string> = {
   WEB: 'bg-blue-100 text-blue-800',
@@ -43,107 +32,6 @@ const STATUS_COLORS: Record<string, string> = {
   CANCELLED: 'bg-yellow-100 text-yellow-800',
 };
 
-function CreateTestCaseForm({
-  orgSlug,
-  suiteId,
-  close,
-}: {
-  orgSlug: string;
-  suiteId: string;
-  close: () => void;
-}) {
-  const utils = trpc.useUtils();
-  const createCase = trpc.testCase.create.useMutation({
-    onSuccess: () => {
-      utils.testSuite.getBySlug.invalidate();
-      close();
-    },
-  });
-
-  const [title, setTitle] = useState('');
-  const [targetType, setTargetType] = useState<string>('WEB');
-  const [priority, setPriority] = useState<string>('MEDIUM');
-  const [tags, setTags] = useState('');
-  const [error, setError] = useState('');
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError('');
-    try {
-      await createCase.mutateAsync({
-        orgSlug,
-        suiteId,
-        title,
-        targetType: targetType as typeof TARGET_TYPES[number],
-        priority: priority as typeof PRIORITIES[number],
-        tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
-      });
-    } catch (err: unknown) {
-      setError((err as Error).message || 'Failed to create test case');
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="case-title">Title</Label>
-        <Input
-          id="case-title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Verify login button works"
-          required
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Target type</Label>
-          <Select value={targetType} onValueChange={setTargetType}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {TARGET_TYPES.map((t) => (
-                <SelectItem key={t} value={t}>{t.replace('_', ' ')}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label>Priority</Label>
-          <Select value={priority} onValueChange={setPriority}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PRIORITIES.map((p) => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="case-tags">Tags (comma-separated)</Label>
-        <Input
-          id="case-tags"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          placeholder="smoke, auth, critical-path"
-        />
-      </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <button
-        type="submit"
-        disabled={createCase.isPending}
-        className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50"
-      >
-        {createCase.isPending ? 'Adding...' : 'Add test case'}
-      </button>
-    </form>
-  );
-}
-
 export function SuiteDetail({
   orgSlug,
   projectSlug,
@@ -160,6 +48,8 @@ export function SuiteDetail({
   );
 
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
+  const [editingTestCaseId, setEditingTestCaseId] = useState<string | null>(null);
+  const [showCreateEditor, setShowCreateEditor] = useState(false);
 
   const utils = trpc.useUtils();
   const archiveSuite = trpc.testSuite.archive.useMutation({
@@ -199,18 +89,12 @@ export function SuiteDetail({
           >
             {triggerRun.isPending ? 'Starting...' : 'Run suite'}
           </button>
-          <CreateDialog
-            trigger={
-              <button className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all">
-                Add test case
-              </button>
-            }
-            title="Add test case"
+          <button
+            onClick={() => setShowCreateEditor(true)}
+            className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
           >
-            {({ close }) => (
-              <CreateTestCaseForm orgSlug={orgSlug} suiteId={suite.id} close={close} />
-            )}
-          </CreateDialog>
+            Add test case
+          </button>
           <button
             onClick={() => archiveSuite.mutate({ orgSlug, suiteId: suite.id, archived: !suite.archived })}
             className="rounded-lg border px-3 py-2 text-sm text-muted-foreground hover:bg-muted/60 transition-colors"
@@ -258,7 +142,8 @@ export function SuiteDetail({
             {suite.testCases.map((tc) => (
               <div
                 key={tc.id}
-                className="grid grid-cols-[3rem_1fr_6rem_5rem_8rem] gap-2 px-6 py-3 text-sm hover:bg-muted/30 transition-colors items-center"
+                onClick={() => setEditingTestCaseId(tc.id)}
+                className="grid grid-cols-[3rem_1fr_6rem_5rem_8rem] gap-2 px-6 py-3 text-sm hover:bg-muted/30 transition-colors items-center cursor-pointer"
               >
                 <span className="text-xs text-muted-foreground">{tc.position + 1}</span>
                 <span className="font-medium">{tc.title}</span>
@@ -321,6 +206,34 @@ export function SuiteDetail({
           </div>
         )}
       </div>
+      {/* Create test case dialog */}
+      <CreateDialog
+        trigger={<span className="hidden" />}
+        title="Add test case"
+        open={showCreateEditor}
+        onOpenChange={setShowCreateEditor}
+      >
+        {({ close }) => (
+          <TestCaseEditor orgSlug={orgSlug} suiteId={suite.id} close={close} />
+        )}
+      </CreateDialog>
+
+      {/* Edit test case dialog */}
+      <CreateDialog
+        trigger={<span className="hidden" />}
+        title="Edit test case"
+        open={!!editingTestCaseId}
+        onOpenChange={(open) => { if (!open) setEditingTestCaseId(null); }}
+      >
+        {({ close }) => (
+          <TestCaseEditor
+            orgSlug={orgSlug}
+            suiteId={suite.id}
+            testCaseId={editingTestCaseId!}
+            close={() => { setEditingTestCaseId(null); close(); }}
+          />
+        )}
+      </CreateDialog>
     </div>
   );
 }
