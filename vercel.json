@@ -2,5 +2,5 @@
   "buildCommand": "pnpm --filter @gofree/db db:generate && pnpm --filter @gofree/web build",
   "installCommand": "pnpm install",
   "outputDirectory": "apps/web/.next",
-  "framework": null
+  "framework": "nextjs"
 }
