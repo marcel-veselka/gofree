@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd packages/db && npx prisma generate --schema=prisma/schema && cp -r ../../node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node ../../apps/web/ 2>/dev/null; cd ../.. && pnpm --filter @gofree/web build",
+  "buildCommand": "cd packages/db && npx prisma generate --schema=prisma/schema && echo '=== PRISMA ENGINE FILES ===' && find ../../node_modules/.pnpm -name 'libquery_engine*' -type f 2>/dev/null && echo '=== .prisma/client ===' && ls ../../node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client/*.node 2>/dev/null && echo '=== END ===' && cd ../.. && pnpm --filter @gofree/web build",
   "installCommand": "pnpm install",
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs"
