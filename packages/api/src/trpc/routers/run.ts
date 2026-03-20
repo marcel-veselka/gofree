@@ -73,6 +73,7 @@ export const runRouter = t.router({
         where: { id: input.runId },
         include: {
           testSuite: { select: { name: true, slug: true } },
+          steps: { orderBy: { index: 'asc' as const } },
           testResults: {
             include: {
               testCase: { select: { title: true, targetType: true, priority: true } },
