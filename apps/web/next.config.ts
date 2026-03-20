@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     '@gofree/ai',
     '@gofree/realtime',
   ],
+  serverExternalPackages: ['@prisma/client', '.prisma/client'],
 };
 
 export default nextConfig;
