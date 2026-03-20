@@ -202,11 +202,11 @@ export function RunDetail({
                   {isExpanded && (
                     <div className="border-t bg-muted/10 px-6 py-4">
                       {/* Error message */}
-                      {result.errorMessage && (
+                      {result.error && (
                         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
                           <p className="text-xs font-medium text-red-800">Error</p>
                           <pre className="mt-1 whitespace-pre-wrap text-xs text-red-700">
-                            {result.errorMessage}
+                            {result.error}
                           </pre>
                         </div>
                       )}
