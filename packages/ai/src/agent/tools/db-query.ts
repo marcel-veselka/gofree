@@ -6,7 +6,7 @@ const WRITE_OPERATIONS = /^\s*(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE)\b/i;
 export const dbQuery = tool({
   description:
     'Executes a read-only SQL query against the specified database. Write operations are blocked.',
-  parameters: z.object({
+  inputSchema: z.object({
     query: z.string().describe('The SQL query to execute'),
     connectionString: z
       .string()

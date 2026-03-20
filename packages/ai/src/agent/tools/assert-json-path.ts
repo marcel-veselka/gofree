@@ -22,7 +22,7 @@ function resolveJsonPath(obj: unknown, path: string): unknown {
 export const assertJsonPath = tool({
   description:
     'Parses a JSON string, resolves a dot-notation path, and asserts the value matches the expected value.',
-  parameters: z.object({
+  inputSchema: z.object({
     json: z.string().describe('The JSON string to parse'),
     path: z
       .string()

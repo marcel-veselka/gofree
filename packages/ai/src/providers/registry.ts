@@ -8,7 +8,10 @@ export function getProvider(name: ProviderName) {
     case 'openai':
       return createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
     case 'anthropic':
-      return createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      return createAnthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        ...(process.env.ANTHROPIC_BASE_URL ? { baseURL: process.env.ANTHROPIC_BASE_URL } : {}),
+      });
     default:
       throw new Error(`Unknown AI provider: ${name}`);
   }

@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const apiCall = tool({
   description:
     'Makes an HTTP request to the specified URL and returns the response status, headers, body, and duration.',
-  parameters: z.object({
+  inputSchema: z.object({
     method: z.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH']),
     url: z.string().describe('The URL to send the request to'),
     headers: z

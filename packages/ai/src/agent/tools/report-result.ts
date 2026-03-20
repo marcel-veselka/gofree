@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const reportResult = tool({
   description:
     'Reports the final result of a test case with a status and summary.',
-  parameters: z.object({
+  inputSchema: z.object({
     status: z
       .enum(['passed', 'failed', 'skipped'])
       .describe('The test result status'),
