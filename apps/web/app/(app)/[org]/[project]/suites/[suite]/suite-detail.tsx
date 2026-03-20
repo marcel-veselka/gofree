@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
+import Link from 'next/link';
 import { CreateDialog } from '@/components/create-dialog';
 import { RunProgress } from '@/components/run-progress';
 import { Badge } from '@/components/ui/badge';
@@ -299,7 +300,11 @@ export function SuiteDetail({
         ) : (
           <div className="divide-y">
             {runHistory.map((run) => (
-              <div key={run.id} className="flex items-center justify-between px-6 py-3 hover:bg-muted/30 transition-colors">
+              <Link
+                key={run.id}
+                href={`/${orgSlug}/${projectSlug}/runs/${run.id}`}
+                className="flex items-center justify-between px-6 py-3 hover:bg-muted/30 transition-colors"
+              >
                 <div className="flex items-center gap-3">
                   <Badge variant="secondary" className={STATUS_COLORS[run.status]}>
                     {run.status}
@@ -311,7 +316,7 @@ export function SuiteDetail({
                 <span className="text-xs text-muted-foreground">
                   {new Date(run.createdAt).toLocaleString()}
                 </span>
-              </div>
+              </Link>
             ))}
           </div>
         )}
