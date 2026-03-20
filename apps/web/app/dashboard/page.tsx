@@ -10,7 +10,7 @@ export default function DashboardRedirect() {
 
   useEffect(() => {
     if (!isLoading && orgs) {
-      if (orgs.length > 0) {
+      if (orgs.length > 0 && orgs[0]) {
         router.replace(`/${orgs[0].slug}`);
       } else {
         // No orgs — this shouldn't happen (auto-created on signup), but handle it
