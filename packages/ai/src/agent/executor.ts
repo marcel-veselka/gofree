@@ -69,7 +69,7 @@ export async function executeAgent(
   try {
     const provider = getProvider(options.provider);
 
-    const response = await generateText({
+    const response = await (generateText as any)({
       model: provider(options.model),
       system: options.systemPrompt,
       messages: [
@@ -81,16 +81,13 @@ export async function executeAgent(
       tools: options.tools,
       maxSteps: options.maxSteps,
       abortSignal: abortController.signal,
-      // Force tool usage until the agent calls reportResult
       toolChoice: 'required',
-      stopWhen: (event) => {
-        if (event.steps.length === 0) return false;
+      stopWhen: (event: any) => {
+        if (!event.steps || event.steps.length === 0) return false;
         const lastStep = event.steps[event.steps.length - 1];
-        // Stop when agent calls reportResult or reaches reasonable step count
-        const calledReport = lastStep.toolCalls?.some(
+        return lastStep.toolCalls?.some(
           (tc: any) => tc.toolName === 'reportResult'
-        );
-        return !!calledReport;
+        ) ?? false;
       },
     });
 

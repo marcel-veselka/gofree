@@ -32,3 +32,10 @@ packages/db/prisma/migrations/*.sql.bak
 *.log
 tmp/
 .cache/
+.vercel
+
+# Data
+data/
+apps/web/data/
+test-artifacts/
+*.tsbuildinfo

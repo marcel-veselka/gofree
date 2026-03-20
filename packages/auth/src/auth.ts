@@ -28,7 +28,7 @@ export const auth = betterAuth({
           tokenUrl: 'https://github.com/login/oauth/access_token',
           scopes: ['read:user', 'user:email'],
           pkce: false,
-          async getUserInfo(token) {
+          async getUserInfo(token): Promise<any> {
             const res = await fetch('https://api.github.com/user', {
               headers: { Authorization: `Bearer ${token.accessToken}`, 'User-Agent': 'gofree' },
             });

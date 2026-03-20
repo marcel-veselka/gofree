@@ -9,6 +9,7 @@ import { agentDefinitionRouter } from './routers/agent-definitions';
 import { testResultRouter } from './routers/test-results';
 import { runRouter } from './routers/run';
 import { dashboardRouter } from './routers/dashboard';
+import { generateRouter } from './routers/generate';
 
 export { publicProcedure, protectedProcedure, orgProcedure } from './procedures';
 
@@ -23,6 +24,7 @@ export const appRouter = t.router({
   testResult: testResultRouter,
   run: runRouter,
   dashboard: dashboardRouter,
+  generate: generateRouter,
 });
 
 export type AppRouter = typeof appRouter;

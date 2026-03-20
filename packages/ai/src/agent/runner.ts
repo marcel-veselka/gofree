@@ -120,7 +120,7 @@ export async function runTestSuite(config: RunConfig): Promise<void> {
 
   // 6. Execute each test case sequentially
   for (let caseIndex = 0; caseIndex < testCases.length; caseIndex++) {
-    const testCase = testCases[caseIndex];
+    const testCase = testCases[caseIndex]!;
 
     await onProgress?.({
       type: 'case:started',

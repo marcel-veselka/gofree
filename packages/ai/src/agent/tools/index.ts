@@ -1,4 +1,5 @@
-import type { CoreTool } from 'ai';
+// Use generic Record type — CoreTool type varies across AI SDK versions
+type ToolMap = Record<string, any>;
 
 import { apiCall } from './api-call';
 import { assertContains } from './assert-contains';
@@ -17,13 +18,13 @@ import { reportResult } from './report-result';
 export { BrowserContext } from './browser-context';
 export { createBrowserTools } from './browser-real';
 
-const assertTools: Record<string, CoreTool> = {
+const assertTools: ToolMap = {
   assertStatusCode,
   assertJsonPath,
   assertContains,
 };
 
-const simulatedBrowserTools: Record<string, CoreTool> = {
+const simulatedBrowserTools: ToolMap = {
   browserNavigate,
   browserClick,
   browserFill,
@@ -38,7 +39,7 @@ interface GetToolsOptions {
 export function getToolsForTarget(
   targetType: string,
   options?: GetToolsOptions
-): Record<string, CoreTool> {
+): ToolMap {
   const browserTools = options?.browserContext
     ? createBrowserTools(options.browserContext)
     : simulatedBrowserTools;
@@ -79,7 +80,7 @@ export function getToolsForTarget(
   }
 }
 
-export function getAllTools(): Record<string, CoreTool> {
+export function getAllTools(): ToolMap {
   return {
     apiCall,
     ...assertTools,
