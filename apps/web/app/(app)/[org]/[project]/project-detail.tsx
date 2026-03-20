@@ -152,20 +152,14 @@ export function ProjectDetail({
       {/* Tabs */}
       <Tabs value={tab} className="mt-6">
         <TabsList>
-          <TabsTrigger value="suites" asChild>
-            <Link href={`/${orgSlug}/${projectSlug}?tab=suites`}>
-              Test Suites ({suites?.length ?? 0})
-            </Link>
+          <TabsTrigger value="suites">
+            Test Suites ({suites?.length ?? 0})
           </TabsTrigger>
-          <TabsTrigger value="environments" asChild>
-            <Link href={`/${orgSlug}/${projectSlug}?tab=environments`}>
-              Environments ({environments?.length ?? 0})
-            </Link>
+          <TabsTrigger value="environments">
+            Environments ({environments?.length ?? 0})
           </TabsTrigger>
-          <TabsTrigger value="agents" asChild>
-            <Link href={`/${orgSlug}/${projectSlug}?tab=agents`}>
-              Agents ({agents?.length ?? 0})
-            </Link>
+          <TabsTrigger value="agents">
+            Agents ({agents?.length ?? 0})
           </TabsTrigger>
         </TabsList>
 
