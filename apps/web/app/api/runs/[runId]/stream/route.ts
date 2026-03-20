@@ -1,6 +1,11 @@
 import { db } from '@gofree/db';
-import { createSSEStream, sendSSEEvent } from '@gofree/realtime';
+import { createSSEStream } from '@gofree/realtime';
 import { subscribeToRun, type RunEvent } from '@gofree/realtime';
+
+function sendEvent(controller: ReadableStreamDefaultController, event: unknown) {
+  const data = `data: ${JSON.stringify(event)}\n\n`;
+  controller.enqueue(new TextEncoder().encode(data));
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -42,7 +47,7 @@ export async function GET(
       status: r.status,
     })),
   };
-  sendSSEEvent(controller, snapshot);
+  sendEvent(controller, snapshot);
 
   // If run is already done, close the stream
   if (['COMPLETED', 'FAILED', 'CANCELLED'].includes(run.status)) {
@@ -62,7 +67,7 @@ export async function GET(
   try {
     unsubscribe = await subscribeToRun(runId, (event) => {
       try {
-        sendSSEEvent(controller, event);
+        sendEvent(controller, event);
         if (event.type === 'run:completed') {
           controller.close();
           unsubscribe?.();
